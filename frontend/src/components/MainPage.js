@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
+
 const MainPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const MainPage = () => {
         <ul>
           <li>
             <button onClick={() => navigate('one', { replace: false })}>
-              Page One
+              Hexlet Chat
             </button>
           </li>
           <li>

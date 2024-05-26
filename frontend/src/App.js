@@ -4,7 +4,8 @@
 import './App.css';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { PageOne, PageTwo } from './components/Pages';
+import { PageOne, PageTwo, PageThree } from './components/Pages';
+import Page404 from './components/Page404';
 import MainPage from './components/MainPage';
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<MainPage />} >
             <Route index element={<div>No page is selected.</div> } />
+            <Route path="*" element={<Page404 />} />
             <Route path="one" element={<PageOne />} />
             <Route path="two" element={<PageTwo />} />
           </Route>

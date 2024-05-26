@@ -16,7 +16,7 @@ const MainPage = () => {
       <nav>
         <ul>
           <li>
-            <button onClick={() => navigate('one', { replace: false })}>
+            <button onClick={() => navigate('login', { replace: false })}>
               Hexlet Chat
             </button>
           </li>

@@ -5,10 +5,12 @@ import './App.css';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { PageOne } from './components/Pages';
+import { LoginPage } from './components/LoginForm';
 import Page404 from './components/Page404';
 import MainPage from './components/MainPage';
 
 const App = () => {
+  //console.log('localStorage>>>', localStorage)
 
   return (
     <BrowserRouter>
@@ -17,6 +19,7 @@ const App = () => {
             <Route index element={<PageOne />} />
             <Route path="*" element={<Page404 />} />
             <Route path="login" element={<PageOne />} />
+            <Route path="three" element={<LoginPage />} />
           </Route>
       </Routes>
     </BrowserRouter>

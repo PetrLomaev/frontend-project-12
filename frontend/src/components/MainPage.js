@@ -25,6 +25,11 @@ const MainPage = () => {
               Page Two
             </button>
           </li>
+          <li>
+            <button onClick={() => navigate('three', { replace: false })}>
+              Test LoginPage
+            </button>
+          </li>
         </ul>
       </nav>
       <hr />

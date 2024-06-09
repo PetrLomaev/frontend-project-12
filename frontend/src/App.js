@@ -4,25 +4,28 @@
 import './App.css';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { PageOne } from './components/Pages';
 import { LoginPage } from './components/LoginForm';
+import { HomePage } from './components/HomePage';
 import Page404 from './components/Page404';
-import MainPage from './components/MainPage';
+import store from '../src/slices/configureStore';
+import { Provider } from 'react-redux';
+
 
 const App = () => {
   //console.log('localStorage>>>', localStorage)
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainPage />} >
-            <Route index element={<PageOne />} />
+    <div>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="*" element={<Page404 />} />
-            <Route path="login" element={<PageOne />} />
-            <Route path="three" element={<LoginPage />} />
-          </Route>
-      </Routes>
-    </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+      </Provider>
+    </div>
   );
 }
 

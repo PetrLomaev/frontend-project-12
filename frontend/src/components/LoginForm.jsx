@@ -47,8 +47,8 @@ const handleSubmit = async (formValue, setShowError, navigate, dispatch) => {
 
 export const LoginPage = () => {
 
-  const authInit = useAuth();
-  console.log('authInit>>>', authInit);
+  //const authInit = useAuth();
+  //console.log('authInit>>>', authInit);
   const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -75,7 +75,7 @@ export const LoginPage = () => {
             <div className="card shadow-sm">
               <div className="card-body row p-5">
                 <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
-                  <img src= {startImage} className="rounded-circle" alt="Войти"></img>
+                  <img src={startImage} className="rounded-circle" alt="Войти"></img>
                 </div>
                 <div className="col-12 col-md-6">
                 <Form onSubmit={formInit.handleSubmit}>
@@ -126,5 +126,3 @@ export const LoginPage = () => {
 
 
 };
-
-//export default LoginPage;

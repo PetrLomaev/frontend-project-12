@@ -10,12 +10,12 @@ const messagesSlice = createSlice({
   name: 'messages',
   initialState,
   reducers: {
-    loadMessages(state, action) { // Подгрузить все сообщения
+    loadMessages(state, action) { // Подгрузить все сообщения в стейт
       state.messages = action.payload;
     },
     addMessage(state, action){ // Добавить ОДНО сообщение
       state.messages.push(action.payload);
-      state.amountOfMessages += 1;
+      state.amountOfMessages = state.messages.length;
     },
   },
 });

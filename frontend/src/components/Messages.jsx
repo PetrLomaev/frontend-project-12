@@ -1,13 +1,13 @@
 /* eslint-disable */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormik, Formik, Field, Form, validateYupSchema } from 'formik';
 import { Button } from 'react-bootstrap';
 import { io } from 'socket.io-client';
 import { getMessages, getAmountOfMessages, loadMessages, addMessage } from '../slices/messagesSlice.js';
 import { getUser, getIsAuthorization, getToken, setToken } from '../slices/authorizationSlice.js';
-import { getChannels, getActiveChannel, setChannels } from '../slices/channelsSlice.js';
+import { getChannels, getActiveChannelId, getActiveChannelName, setChannels } from '../slices/channelsSlice.js';
 import axios from 'axios';
 import routes from '../routes.js';
 
@@ -21,7 +21,7 @@ const handleSubmitMessage = async (newMessage, token, dispatch) => {
       },
     });
     const currentMessage = response.data;
-    dispatch(addMessage(currentMessage));
+    //dispatch(addMessage(currentMessage));
     //const tokenValueInStorage = localStorage.getItem('token');
     
   }
@@ -42,7 +42,8 @@ const Messages = () => {
   const token = useSelector(getToken);
 
   // Вытащить значения из channelsSlice
-  const activeChannel = useSelector(getActiveChannel);
+  const activeChannelName = useSelector(getActiveChannelName);
+  const activeChannelId = useSelector(getActiveChannelId);
 
   const textMessageToNewMessage = (textValue, channelId, username) => {
     return {
@@ -52,15 +53,27 @@ const Messages = () => {
     }
   };
 
+  useEffect(() => {
+    socket.on('newMessage', (currentMessage) => {
+      console.log('Current newMessage>>>', currentMessage);
+      dispatch(addMessage(currentMessage));
+    });
+    return () => {
+      socket.off('newMessage');
+    };
+  }, []);
+
   return (
     <div className="col p-0 h-100">
       <div className="d-flex flex-column h-100">
         <div className="bg-light mb-4 p-3 shadow-sm small">
-          <p className="m-0"><b># general</b></p>
+          <p className="m-0"><b># {activeChannelName}</b></p>
           <span className="text-muted">{amountOfMessages} сообщений</span>
         </div>
         <div id="messages-box" className="chat-messages overflow-auto px-5 ">
-          {messages.map((message) => (
+          {messages
+          .filter((message) => message.channelId === activeChannelId)
+          .map((message) => (
             <div class="text-break mb-2">
               <b key={message.channelId}>{message.username}</b>: {message.body}</div>
           ))}
@@ -69,7 +82,7 @@ const Messages = () => {
         <Formik
           initialValues={{ message: '' }}
           onSubmit={(values) => {
-            const newMessage = textMessageToNewMessage(values.message, activeChannel, user);
+            const newMessage = textMessageToNewMessage(values.message, activeChannelId, user);
             handleSubmitMessage(newMessage, token, dispatch);
             
           }}

@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getUser, getIsAuthorization, getToken, setToken } from '../slices/authorizationSlice.js';
-import { getChannels, getActiveChannel, setChannels } from '../slices/channelsSlice.js';
+import { getChannels, setChannels } from '../slices/channelsSlice.js';
 import { getMessages, getAmountOfMessages, loadMessages } from '../slices/messagesSlice.js';
 import { useSelector, useDispatch } from 'react-redux';
 import Channels from './Channels.jsx';
@@ -36,8 +36,6 @@ export const HomePage = () => {
   // Вытащить значения из channelsSlice
   const channels = useSelector(getChannels);
   console.log('channels>>>', channels);
-  const activeChannel = useSelector(getActiveChannel);
-  console.log('activeChannel>>>', activeChannel);
 
   // Вытащить значения из messagesSlice
   const messages = useSelector(getMessages);

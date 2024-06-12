@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getChannels, getActiveChannel, setChannels } from '../slices/channelsSlice.js';
+import { getChannels, getActiveChannelId, setChannels, setActiveChannel, getActiveChannelName } from '../slices/channelsSlice.js';
+import cn from 'classnames';
 
 
 const Channels = () => {
@@ -10,8 +11,27 @@ const Channels = () => {
 
   // Вытащить значения из channelsSlice
   const channels = useSelector(getChannels);
-  const activeChannel = useSelector(getActiveChannel);
+  const activeChannelId = useSelector(getActiveChannelId);
+  const activeChannelName = useSelector(getActiveChannelName);
 
+  const activeChannelClass = cn([
+    'w-100',
+    'rounded-0',
+    'text-start',
+    'btn',
+    'btn-secondary',
+  ]);
+
+  const notActiveChannelClass = cn([
+    'w-100',
+    'rounded-0',
+    'text-start',
+    'btn',
+  ]);
+
+  const handleSetActiveChannel = (id) => {
+    dispatch(setActiveChannel(id));
+  }
 
 
   return (
@@ -22,7 +42,9 @@ const Channels = () => {
             <li key={channel.id} className="nav-item w-100">
               <button
               type="button"
-              className="w-100 rounded-0 text-start btn btn-secondary">
+              className={channel.id === activeChannelId ? activeChannelClass : notActiveChannelClass}
+              onClick={() => handleSetActiveChannel(channel.id)}
+              >
                 <span className="me-1">#</span>
                 {channel.name}
               </button>

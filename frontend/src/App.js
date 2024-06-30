@@ -9,13 +9,13 @@ import { HomePage } from './components/HomePage';
 import Page404 from './components/Page404';
 import store from '../src/slices/configureStore';
 import { Provider } from 'react-redux';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const App = () => {
-  //console.log('localStorage>>>', localStorage)
 
   return (
-    <div>
+    <div className="App">
       <Provider store={store}>
         <BrowserRouter>
           <Routes>

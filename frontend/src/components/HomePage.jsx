@@ -1,17 +1,19 @@
 /* eslint-disable */
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
-
-import { Button, Form } from 'react-bootstrap';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getUser, getIsAuthorization, getToken, setToken } from '../slices/authorizationSlice.js';
-import { getChannels, setChannels } from '../slices/channelsSlice.js';
-import { getMessages, getAmountOfMessages, loadMessages } from '../slices/messagesSlice.js';
+import { getChannels, setChannels, getShowModalAddChannel, getShowModalRenameChannel, getShowModalDeleteChannel } from '../slices/channelsSlice.js';
+import { getMessages, getCountOfMessages, loadMessages } from '../slices/messagesSlice.js';
 import { useSelector, useDispatch } from 'react-redux';
 import Channels from './Channels.jsx';
 import Messages from './Messages.jsx';
+import ModalAddChannel from './ModalAddChannel.jsx';
+import ModalRenameChannel from './ModalRenameChannel.jsx';
+import ModalDeleteChannel from './ModalDeleteChannel.jsx';
 //import useAuth from '../hooks/index.jsx';
 import routes from '../routes.js';
+import '../App.css';
 
 /*
 const handleClick = () => {
@@ -35,15 +37,18 @@ export const HomePage = () => {
 
   // Вытащить значения из channelsSlice
   const channels = useSelector(getChannels);
-  console.log('channels>>>', channels);
+  const isShowModalAddChannel = useSelector(getShowModalAddChannel);
+  console.log('isShowModalAddChannel>>>', isShowModalAddChannel);
+  const isShowModalRenameChannel = useSelector(getShowModalRenameChannel);
+  const isShowModalDeleteChannel = useSelector(getShowModalDeleteChannel);
 
   // Вытащить значения из messagesSlice
   const messages = useSelector(getMessages);
   console.log('messages>>>', messages);
-  const amountOfMessages = useSelector(getAmountOfMessages);
-  console.log('amountOfMessages>>>', amountOfMessages);
+  const countOfMessages = useSelector(getCountOfMessages);
+  console.log('countOfMessages>>>', countOfMessages);
 
-  // Функция для получения массива каналов и последующей их записи в state
+  // Функция для получения массива всех каналов и последующей их записи в state
   const getChannelsData = async (token) => {
     try {
       const responseChannels = await axios.get(routes.channelsPath(), {
@@ -59,7 +64,7 @@ export const HomePage = () => {
     }
   };
 
-    // Функция для получения массива всех сообщений и последующей их записи в state
+  // Функция для получения массива всех сообщений и последующей их записи в state
   const getMessagesData = async (token) => {
     try {
       const responseMessages = await axios.get(routes.messagesPath(), {
@@ -78,25 +83,39 @@ export const HomePage = () => {
   useEffect(() => {
     getChannelsData(token);
     getMessagesData(token);
-  }, []);
+  }, [dispatch]);
 
   return (
-  <div className="row h-100 bg-white flex-md-row">
-    <Button><a href='/login'>Выйти</a></Button>
-    <div className="col-4 col-md-2 border-end px-0 bg-light flex-column h-100 d-flex">
-      <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
-        <b>Каналы</b>
-        <button type="button" className="p-0 text-primary btn btn-group-vertical">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
-            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"></path>
-            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"></path>
-          </svg>
-          <span className="visually-hidden">+</span>
-        </button>
+    <div className="h-100">
+      <div className="h-100" id="chat">
+        <div className="d-flex flex-column h-100">
+          <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
+            <div className="container">
+              <a className="navbar-brand" href="/">
+                Hexlet Chat
+              </a>
+              <button type="button" className="btn btn-primary">
+                <a href="/login">
+                  Выйти
+                </a>
+              </button>
+            </div>
+          </nav>
+          <div className="container h-100 my-4 overflow-hidden rounded shadow">
+            <div className="row h-100 bg-white flex-md-row">
+              <div className="col-4 col-md-2 border-end px-0 bg-light flex-column h-100 d-flex">
+                <Channels />
+              </div>
+              <div className="col p-0 h-100">
+                <Messages />
+              </div>
+            </div>
+          </div>
+          {isShowModalAddChannel && <ModalAddChannel />}
+          {isShowModalRenameChannel && <ModalRenameChannel />}
+          {isShowModalDeleteChannel && <ModalDeleteChannel />}
+        </div>
       </div>
-      <Channels />
     </div>
-    <Messages />
-  </div>
   );
 };

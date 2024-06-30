@@ -2,28 +2,25 @@
 
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useFormik, Formik, Field, Form, validateYupSchema } from 'formik';
+import { Formik, Field, Form} from 'formik';
 import { Button } from 'react-bootstrap';
 import { io } from 'socket.io-client';
-import { getMessages, getAmountOfMessages, loadMessages, addMessage } from '../slices/messagesSlice.js';
-import { getUser, getIsAuthorization, getToken, setToken } from '../slices/authorizationSlice.js';
-import { getChannels, getActiveChannelId, getActiveChannelName, setChannels } from '../slices/channelsSlice.js';
+import { getMessages, getCountOfMessages, addMessage } from '../slices/messagesSlice.js';
+import { getUser, getToken } from '../slices/authorizationSlice.js';
+import { getActiveChannelId, getActiveChannelName } from '../slices/channelsSlice.js';
 import axios from 'axios';
 import routes from '../routes.js';
 
 const socket = io('http://localhost:3000');
 
-const handleSubmitMessage = async (newMessage, token, dispatch) => {
+const handleSubmitMessage = async (newMessage, token) => {
   try {
     const response = await axios.post(routes.messagesPath(), newMessage, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    const currentMessage = response.data;
-    //dispatch(addMessage(currentMessage));
     //const tokenValueInStorage = localStorage.getItem('token');
-    
   }
   catch (e) {
     console.log(e);
@@ -33,10 +30,6 @@ const handleSubmitMessage = async (newMessage, token, dispatch) => {
 const Messages = () => {
   const dispatch = useDispatch();
 
-  // Вытащить значения из messagesSlice
-  const messages = useSelector(getMessages);
-  const amountOfMessages = useSelector(getAmountOfMessages);
-
   // Вытащить значения из authorizationSlice
   const user = useSelector(getUser);
   const token = useSelector(getToken);
@@ -44,6 +37,10 @@ const Messages = () => {
   // Вытащить значения из channelsSlice
   const activeChannelName = useSelector(getActiveChannelName);
   const activeChannelId = useSelector(getActiveChannelId);
+
+  // Вытащить значения из messagesSlice
+  const messages = useSelector(getMessages);
+  const countOfMessages = useSelector((state) => getCountOfMessages(state, activeChannelId));
 
   const textMessageToNewMessage = (textValue, channelId, username) => {
     return {
@@ -61,20 +58,19 @@ const Messages = () => {
     return () => {
       socket.off('newMessage');
     };
-  }, []);
+  }, [dispatch]);
 
   return (
-    <div className="col p-0 h-100">
       <div className="d-flex flex-column h-100">
         <div className="bg-light mb-4 p-3 shadow-sm small">
           <p className="m-0"><b># {activeChannelName}</b></p>
-          <span className="text-muted">{amountOfMessages} сообщений</span>
+          <span className="text-muted">{countOfMessages} сообщений</span>
         </div>
         <div id="messages-box" className="chat-messages overflow-auto px-5 ">
           {messages
           .filter((message) => message.channelId === activeChannelId)
           .map((message) => (
-            <div class="text-break mb-2">
+            <div className="text-break mb-2">
               <b key={message.channelId}>{message.username}</b>: {message.body}</div>
           ))}
         </div>
@@ -83,7 +79,7 @@ const Messages = () => {
           initialValues={{ message: '' }}
           onSubmit={(values) => {
             const newMessage = textMessageToNewMessage(values.message, activeChannelId, user);
-            handleSubmitMessage(newMessage, token, dispatch);
+            handleSubmitMessage(newMessage, token);
             
           }}
         >
@@ -114,7 +110,6 @@ const Messages = () => {
       </Formik>
         </div>
       </div>
-    </div>
   );
 };
 

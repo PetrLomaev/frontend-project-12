@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+.chat-messages {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+
+#channels-box {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 550px;
+  width: 100%;
+}
+
+.nav-item {
+  flex: 0 0 auto;
+}

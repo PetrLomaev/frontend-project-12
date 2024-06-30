@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#root {
+  height: 100%;
+}
+
+.App {
+  height: 100%;
+}
+
+.btn-light-gray {
+  background-color: #656060;
+  color: #000;
+}

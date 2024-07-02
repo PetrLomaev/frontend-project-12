@@ -1,11 +1,9 @@
 /* eslint-disable */
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
-// import { Formik, Form, Field } from 'formik';
 import { Button, Form } from 'react-bootstrap';
-import { useLocation, useNavigate } from 'react-router-dom';
-import useAuth from '../hooks/index.jsx';
+import { useNavigate } from 'react-router-dom';
 import routes from '../routes.js';
 import startImage from '../images/start-image.jpeg';
 import * as yup from 'yup';

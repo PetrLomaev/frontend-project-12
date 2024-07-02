@@ -2,9 +2,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  user: '',
+  user: null,
   isAuthorization: false,
-  token: '',
+  token: null,
 };
 
 const authorizationSlice = createSlice({
@@ -15,9 +15,10 @@ const authorizationSlice = createSlice({
       state.user = action.payload;
       state.isAuthorization = true;
     },
-    logOut(state, action){
+    logOut(state){
+      state.user = null;
       state.isAuthorization = false;
-      localStorage.clear();
+      state.token = null;
     },
     setToken(state, action){
       state.token = action.payload;
@@ -25,10 +26,13 @@ const authorizationSlice = createSlice({
     setUser(state, action){
       state.user = action.payload;
     },
+    setAuthorization(state){
+      state.isAuthorization = true;
+    }
   },
 });
 
-export const { logIn, logOut, setToken, setUser } = authorizationSlice.actions;
+export const { logIn, logOut, setToken, setUser, setAuthorization } = authorizationSlice.actions;
 export const getUser = (state) => state.authorization.user;
 export const getIsAuthorization = (state) => state.authorization.isAuthorization;
 export const getToken = (state) => state.authorization.token;

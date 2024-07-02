@@ -2,7 +2,7 @@
 import axios from 'axios';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUser, getIsAuthorization, getToken, setToken } from '../slices/authorizationSlice.js';
+import { getUser, getIsAuthorization, getToken, setToken, logOut } from '../slices/authorizationSlice.js';
 import { getChannels, setChannels, getShowModalAddChannel, getShowModalRenameChannel, getShowModalDeleteChannel } from '../slices/channelsSlice.js';
 import { getMessages, getCountOfMessages, loadMessages } from '../slices/messagesSlice.js';
 import { useSelector, useDispatch } from 'react-redux';
@@ -80,10 +80,21 @@ export const HomePage = () => {
     }
   };
 
+  // Функция для кнопки выхода из чата
+  const handleLogOut = () => {
+    dispatch(logOut());
+  }
+
   useEffect(() => {
     getChannelsData(token);
     getMessagesData(token);
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!isAuthorization) {
+      navigate('/login');
+    }
+  });
 
   return (
     <div className="h-100">
@@ -94,10 +105,8 @@ export const HomePage = () => {
               <a className="navbar-brand" href="/">
                 Hexlet Chat
               </a>
-              <button type="button" className="btn btn-primary">
-                <a href="/login">
-                  Выйти
-                </a>
+              <button type="button" className="btn btn-primary" onClick={handleLogOut}>
+                <a>Выйти</a>
               </button>
             </div>
           </nav>

@@ -4,8 +4,9 @@
 import './App.css';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { LoginPage } from './components/LoginForm';
+import { LoginPage } from './components/LoginPage';
 import { HomePage } from './components/HomePage';
+import { SignUpPage } from './components/SignUpPage';
 import Page404 from './components/Page404';
 import store from '../src/slices/configureStore';
 import { Provider } from 'react-redux';
@@ -21,6 +22,7 @@ const App = () => {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/" element={<HomePage />} />
+            <Route path="/signup" element={<SignUpPage />} />
             <Route path="*" element={<Page404 />} />
           </Routes>
         </BrowserRouter>

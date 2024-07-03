@@ -2,6 +2,7 @@
 import axios from 'axios';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getUser, getIsAuthorization, getToken, setToken, logOut } from '../slices/authorizationSlice.js';
 import { getChannels, setChannels, getShowModalAddChannel, getShowModalRenameChannel, getShowModalDeleteChannel } from '../slices/channelsSlice.js';
 import { getMessages, getCountOfMessages, loadMessages } from '../slices/messagesSlice.js';
@@ -26,6 +27,7 @@ const handleClick = () => {
 export const HomePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // Вытащить значения из authorizationSlice
   const token = useSelector(getToken);
@@ -103,10 +105,10 @@ export const HomePage = () => {
           <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
             <div className="container">
               <a className="navbar-brand" href="/">
-                Hexlet Chat
+                {t('headerChat.header')}
               </a>
               <button type="button" className="btn btn-primary" onClick={handleLogOut}>
-                <a>Выйти</a>
+                <a>{t('homePage.exitButton')}</a>
               </button>
             </div>
           </nav>

@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { getChannels, setActiveChannel, setShowModalAddChannel, addChannel } from '../slices/channelsSlice.js';
@@ -15,6 +16,7 @@ import * as yup from 'yup';
 
 const ModalAddChannel = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   // Вытащить значения из authorizationSlice
   const token = useSelector(getToken);
@@ -63,16 +65,16 @@ const ModalAddChannel = () => {
 
   const schema = yup.object().shape({
     newChannelName: yup.string()
-    .required('Обязательное поле')
-    .min(3, 'От 3 до 20 символов')
-    .max(20, 'От 3 до 20 символов')
-    .test('is-unique', 'Должно быть уникальным', (value) => isUniqueChannelName(value))
+    .required(t('errors.notBeEmpty'))
+    .min(3, t('errors.min3'))
+    .max(20, t('errors.max20'))
+    .test('is-unique', t('errors.isUnique'), (value) => isUniqueChannelName(value))
   });
 
   return (
       <Modal show onHide={handleSetShowModalAddChannel} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Добавить канал</Modal.Title>
+          <Modal.Title>{t('channels.addButton')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Formik
@@ -88,7 +90,7 @@ const ModalAddChannel = () => {
               <Field
                 type="text"
                 name="newChannelName"
-                aria-label="Имя канала"
+                aria-label={t('channels.channelName')}
                 autoComplete="off"
                 placeholder=""
                 className="form-control"
@@ -103,10 +105,10 @@ const ModalAddChannel = () => {
               />
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleSetShowModalAddChannel}>
-                  Отменить
+                  {t('channels.cancelButton')}
                 </Button>
                 <Button variant="primary" type="submit">
-                  Отправить
+                  {t('channels.sendButton')}
                 </Button>
               </Modal.Footer>
             </Form>

@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
   getChannels,
   getActiveChannelId,
@@ -18,6 +19,7 @@ import '../App.css';
 
 const Channels = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   // Вытащить значения из channelsSlice
   const channels = useSelector(getChannels);
@@ -59,7 +61,7 @@ const Channels = () => {
   return (
     <>
       <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
-        <b>Каналы</b>
+        <b>{t('channels.channels')}</b>
         <button
           type="button"
           className="p-0 text-primary btn btn-group-vertical"
@@ -99,14 +101,14 @@ const Channels = () => {
                   variant="secondary"
                   title=""
                 >
-                  <Dropdown.Item eventKey="1" onClick={() => handleSetChannelDataForDelete(channel.id)}>Удалить</Dropdown.Item>
-                  <Dropdown.Item eventKey="2" onClick={() => handleSetChannelDataForRename(channel.id, channel.name)}>Переименовать</Dropdown.Item>
+                  <Dropdown.Item eventKey="1" onClick={() => handleSetChannelDataForDelete(channel.id)}>{t('channels.deleteButton')}</Dropdown.Item>
+                  <Dropdown.Item eventKey="2" onClick={() => handleSetChannelDataForRename(channel.id, channel.name)}>{t('channels.renameButton')}</Dropdown.Item>
                 </DropdownButton>
               }
             </li>
           ))
         ) : (
-          <div> Массив каналов пуст</div>
+          <div>{t('channels.noChannels')}</div>
         )}
       </ul>
     </div>

@@ -1,6 +1,7 @@
 /* eslint-disable */
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFormik, ErrorMessage } from 'formik';
 // import { Formik, Form, Field } from 'formik';
 import { Button, Form } from 'react-bootstrap';
@@ -18,21 +19,22 @@ export const SignUpPage = () => {
   const [nameError, setShowNameError] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const schema = yup.object().shape({
     username: yup
       .string()
-      .required('Обязательное поле')
-      .min(3, 'От 3 до 20 символов')
-      .max(20, 'От 3 до 20 символов'),
+      .required(t('errors.notBeEmpty'))
+      .min(3, t('errors.min3'))
+      .max(20, t('errors.max20')),
     password: yup
       .string()
-      .required('Обязательное поле')
-      .min(6, 'Не менее 6 символов'),
+      .required(t('errors.notBeEmpty'))
+      .min(6, t('errors.min6')),
     confirmPassword: yup
       .string()
       .required('Обязательное поле')
-      .oneOf([yup.ref("password"), null], 'Пароли должны совпадать'),
+      .oneOf([yup.ref("password"), null], t('errors.passwordsMustMatch')),
   });
   
   const handleSubmit = async (formValue) => {
@@ -79,7 +81,7 @@ export const SignUpPage = () => {
     <div className="d-flex flex-column h-100">
       <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
         <div className="container">
-          <a className="navbar-brand" href="/">Hexlet Chat</a>
+          <a className="navbar-brand" href="/">{t('headerChat.header')}</a>
         </div>
       </nav>
   
@@ -89,16 +91,16 @@ export const SignUpPage = () => {
             <div className="card shadow-sm">
               <div className="card-body row p-5">
                 <div>
-                  <img src={signUpImage} className="rounded-circle" alt="Регистрация"></img>
+                  <img src={signUpImage} className="rounded-circle" alt={t('signUpPage.header')}></img>
                 </div>
                 <div className="col-12 col-md-6">
                 <Form onSubmit={formInit.handleSubmit}>
-                    <h1 className="text-center mb-4">Регистрация</h1>
+                    <h1 className="text-center mb-4">{t('signUpPage.header')}</h1>
                     <Form.Group className="mb-3">
                       <Form.Control
                         name="username"
                         type="text"
-                        placeholder="Ваш ник"
+                        placeholder={t('signUpPage.yourNickname')}
                         autoComplete="username"
                         id="username"
                         onChange={formInit.handleChange}
@@ -114,7 +116,7 @@ export const SignUpPage = () => {
                       <Form.Control
                         name="password"
                         type="password"
-                        placeholder="Пароль"
+                        placeholder={t('signUpPage.yourPassword')}
                         id="password"
                         autoComplete="password"
                         onChange={formInit.handleChange}
@@ -130,7 +132,7 @@ export const SignUpPage = () => {
                       <Form.Control
                         name="confirmPassword"
                         type="password"
-                        placeholder='Пароль'
+                        placeholder={t('signUpPage.confirmYourPassword')}
                         id="confirmPassword"
                         autoComplete="confirmPassword"
                         onChange={formInit.handleChange}
@@ -143,10 +145,10 @@ export const SignUpPage = () => {
                       </Form.Control.Feedback>
                     </Form.Group>
                     <Button type="submit">
-                      Зарегистрироваться
+                      {t('signUpPage.register')}
                     </Button>
                     {nameError && (
-                      <div className="invalid-feedback" style={{ display: 'block', color: 'red' }}>Такой пользователь уже существует</div>
+                      <div className="invalid-feedback" style={{ display: 'block', color: 'red' }}>{t('errors.userAlreadyExists')}</div>
                     )}
                   </Form>
                   </div>

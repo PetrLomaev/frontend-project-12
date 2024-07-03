@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
   getChannels,
   setShowModalRenameChannel,
@@ -20,6 +21,7 @@ import * as yup from 'yup';
 
 const ModalRenameChannel = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   // Вытащить значения из authorizationSlice
   const token = useSelector(getToken);
@@ -82,16 +84,16 @@ const ModalRenameChannel = () => {
 
   const schema = yup.object().shape({
     renameChannelName: yup.string()
-    .required('Обязательное поле')
-    .min(3, 'От 3 до 20 символов')
-    .max(20, 'От 3 до 20 символов')
-    .test('is-unique', 'Должно быть уникальным', (value) => isUniqueChannelName(value))
+    .required(t('errors.notBeEmpty'))
+    .min(3, t('errors.min3'))
+    .max(20, t('errors.max20'))
+    .test('is-unique', t('errors.isUnique'), (value) => isUniqueChannelName(value))
   });
 
   return (
       <Modal show onHide={handleSetShowModalRenameChannel} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Переименовать канал</Modal.Title>
+          <Modal.Title>{t('channels.channelRename')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Formik
@@ -106,7 +108,7 @@ const ModalRenameChannel = () => {
               <Field
                 type="text"
                 name="renameChannelName"
-                aria-label="Новое имя канала"
+                aria-label={t('channels.channelNewName')}
                 autoComplete="off"
                 placeholder=""
                 className="form-control"
@@ -122,10 +124,10 @@ const ModalRenameChannel = () => {
               />
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleSetShowModalRenameChannel}>
-                  Отменить
+                  {t('channels.cancelButton')}
                 </Button>
                 <Button variant="primary" type="submit" disabled="">
-                  Отправить
+                  {t('channels.sendButton')}
                 </Button>
               </Modal.Footer>
             </Form>

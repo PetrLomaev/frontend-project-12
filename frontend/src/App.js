@@ -11,6 +11,7 @@ import Page404 from './components/Page404';
 import store from '../src/slices/configureStore';
 import { Provider } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './i18next';
 
 
 const App = () => {

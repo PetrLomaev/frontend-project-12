@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
   getChannels,
   setActiveChannel,
@@ -20,6 +21,7 @@ import { getToken } from '../slices/authorizationSlice.js';
 
 const ModalDeleteChannel = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   // Вытащить значения из authorizationSlice
   const token = useSelector(getToken);
@@ -75,20 +77,18 @@ const ModalDeleteChannel = () => {
   return (
       <Modal show onHide={handleSetShowModalDeleteChannel} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Удалить канал</Modal.Title>
+          <Modal.Title>{t('channels.channelDelete')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p className="lead">Уверены?</p>
+          <p className="lead">{t('channels.areYouSure')}?</p>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleSetShowModalDeleteChannel}>
-                Отменить
+                {t('channels.cancelButton')}
               </Button>
               <Button variant="danger" type="submit" disabled="" onClick={() => handleSetDeleteChannel(token, activeChannelForDelete.id)}>
-                Удалить
+                {t('channels.deleteButton')}
               </Button>
             </Modal.Footer>
- 
-  
         </Modal.Body>
       </Modal>
   );

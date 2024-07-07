@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { getChannels, setActiveChannel, setShowModalAddChannel, addChannel } from '../slices/channelsSlice.js';
+import { getChannels, setActiveChannel, setShowModalAddChannel, addChannel, setShowNotifyAddChannel } from '../slices/channelsSlice.js';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import axios from 'axios';
 import routes from '../routes.js';
@@ -39,6 +39,7 @@ const ModalAddChannel = () => {
         console.log('New channel data>>>', response.data);
         dispatch(addChannel(response.data));
         dispatch(setActiveChannel(response.data.id));
+        dispatch(setShowNotifyAddChannel());
         handleSetShowModalAddChannel();
       }
     }

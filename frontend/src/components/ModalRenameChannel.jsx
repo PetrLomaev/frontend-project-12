@@ -9,6 +9,7 @@ import {
   setShowModalRenameChannel,
   setNewChannelName,
   getActiveChannelForRename,
+  setShowNotifyRenameChannel,
 } from '../slices/channelsSlice.js';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import axios from 'axios';
@@ -47,6 +48,7 @@ const ModalRenameChannel = () => {
         //dispatch(setActiveChannel(response.data.id));
         dispatch(setNewChannelName({ id: response.data.id, newName: response.data.name }));
         handleSetShowModalRenameChannel();
+        dispatch(setShowNotifyRenameChannel());
       }
     }
     catch (e) {

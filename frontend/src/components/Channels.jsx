@@ -13,7 +13,7 @@ import {
   setShowModalDeleteChannel,
   setChannelDataForDelete,
 } from '../slices/channelsSlice.js';
-import { Dropdown, DropdownButton, ButtonGroup} from 'react-bootstrap';
+import { Dropdown, DropdownButton, ButtonGroup, Button} from 'react-bootstrap';
 import cn from 'classnames';
 import '../App.css';
 
@@ -51,13 +51,13 @@ const Channels = () => {
   const handleSetChannelDataForRename = (channelId, channelName) => {
     dispatch(setChannelDataForRename({ channelId, channelName }));
     dispatch(setShowModalRenameChannel());
-  }
+  };
 
   const handleSetChannelDataForDelete = (channelId) => {
     dispatch(setChannelDataForDelete({ channelId }));
     dispatch(setShowModalDeleteChannel());
-  }
-  // Вместо кнопок button сделать Button с Buttongroup? Посмотреть в документации, т.к. переименовать, удалить кривые
+  };
+  // Вместо кнопок button сделать Button с Buttongroup? Посмотреть в документации, т.к. переименовать и удалить кривые
   return (
     <>
       <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
@@ -89,16 +89,16 @@ const Channels = () => {
           channels.map((channel) => (
             <li key={channel.id} className="nav-item w-100">
               <button
-              type="button"
-              className={Number(channel.id) === Number(activeChannelId) ? activeChannelClass : notActiveChannelClass}
-              onClick={() => handleSetActiveChannel(channel.id)}
+                type="button"
+                className={Number(channel.id) === Number(activeChannelId) ? activeChannelClass : notActiveChannelClass}
+                onClick={() => handleSetActiveChannel(channel.id)}
               >
                 <span className="me-1">#</span>
                 {channel.name}
               </button>
               {channel.removable && 
                 <DropdownButton
-                  variant="secondary"
+                  variant={Number(channel.id) === Number(activeChannelId) ? 'secondary' : ''}
                   title=""
                 >
                   <Dropdown.Item eventKey="1" onClick={() => handleSetChannelDataForDelete(channel.id)}>{t('channels.deleteButton')}</Dropdown.Item>
@@ -117,3 +117,34 @@ const Channels = () => {
 };
 
 export default Channels;
+/*
+ПОЭКСПЕРИМЕНТИРОВАТЬ С КНОПКАМИ
+{!!channel.removable ?
+                (<Dropdown as={ButtonGroup}>
+                <Button
+                  variant={Number(channel.id) === Number(activeChannelId) ? 'secondary' : ''}
+                  onClick={() => handleSetActiveChannel(channel.id)}
+                >
+                  <span className="me-1">#</span>
+                  {channel.name}
+                </Button>
+                
+                <Dropdown.Toggle
+                  split
+                  variant={Number(channel.id) === Number(activeChannelId) ? 'secondary' : ''}
+                  id="dropdown-split-basic"
+                />
+              <Dropdown.Menu>
+                <Dropdown.Item eventKey="1" onClick={() => handleSetChannelDataForDelete(channel.id)}>{t('channels.deleteButton')}</Dropdown.Item>
+                <Dropdown.Item eventKey="2" onClick={() => handleSetChannelDataForRename(channel.id, channel.name)}>{t('channels.renameButton')}</Dropdown.Item>
+              </Dropdown.Menu>
+              </Dropdown>
+              ) :
+              (<Button
+                variant={Number(channel.id) === Number(activeChannelId) ? 'secondary' : ''}
+                onClick={() => handleSetActiveChannel(channel.id)}
+              >
+                <span className="me-1">#</span>
+                {channel.name}
+              </Button>)}
+*/

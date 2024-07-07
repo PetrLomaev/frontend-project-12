@@ -4,7 +4,19 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getUser, getIsAuthorization, getToken, setToken, logOut } from '../slices/authorizationSlice.js';
-import { getChannels, setChannels, getShowModalAddChannel, getShowModalRenameChannel, getShowModalDeleteChannel } from '../slices/channelsSlice.js';
+import {
+  getChannels,
+  setChannels,
+  getShowModalAddChannel,
+  getShowModalRenameChannel,
+  getShowModalDeleteChannel,
+  getShowNotifyAddChannel,
+  getShowNotifyRenameChannel,
+  getShowNotifyDeleteChannel,
+  setShowNotifyAddChannel,
+  setShowNotifyRenameChannel,
+  setShowNotifyDeleteChannel,
+} from '../slices/channelsSlice.js';
 import { getMessages, getCountOfMessages, loadMessages } from '../slices/messagesSlice.js';
 import { useSelector, useDispatch } from 'react-redux';
 import Channels from './Channels.jsx';
@@ -15,6 +27,8 @@ import ModalDeleteChannel from './ModalDeleteChannel.jsx';
 //import useAuth from '../hooks/index.jsx';
 import routes from '../routes.js';
 import '../App.css';
+import { ToastContainer, toast, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /*
 const handleClick = () => {
@@ -43,6 +57,9 @@ export const HomePage = () => {
   console.log('isShowModalAddChannel>>>', isShowModalAddChannel);
   const isShowModalRenameChannel = useSelector(getShowModalRenameChannel);
   const isShowModalDeleteChannel = useSelector(getShowModalDeleteChannel);
+  const isShowNotifyAddChannel = useSelector(getShowNotifyAddChannel);
+  const isShowNotifyRenameChannel = useSelector(getShowNotifyRenameChannel);
+  const isShowNotifyDeleteChannel = useSelector(getShowNotifyDeleteChannel);
 
   // Вытащить значения из messagesSlice
   const messages = useSelector(getMessages);
@@ -85,18 +102,86 @@ export const HomePage = () => {
   // Функция для кнопки выхода из чата
   const handleLogOut = () => {
     dispatch(logOut());
-  }
+  };
 
   useEffect(() => {
     getChannelsData(token);
+  }, [dispatch]);
+  /*
+  useEffect(() => {
     getMessagesData(token);
   }, [dispatch]);
-
+  */
   useEffect(() => {
     if (!isAuthorization) {
       navigate('/login');
     }
   });
+
+  const notifyAddChannel = () => {
+    toast.success(t('channels.notifyAdd'), {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
+
+  const notifyRenameChannel = () => {
+    toast.success(t('channels.notifyRename'), {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
+
+  const notifyDeleteChannel = () => {
+    toast.success(t('channels.notifyDelete'), {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
+
+  useEffect(() => {
+    if (isShowNotifyAddChannel) {
+      notifyAddChannel();
+      dispatch(setShowNotifyAddChannel());
+    }
+  }, [isShowNotifyAddChannel]);
+
+  useEffect(() => {
+    if (isShowNotifyRenameChannel) {
+      notifyRenameChannel();
+      dispatch(setShowNotifyRenameChannel());
+    }
+  }, [isShowNotifyRenameChannel]);
+
+  useEffect(() => {
+    if (isShowNotifyDeleteChannel) {
+      notifyDeleteChannel();
+      dispatch(setShowNotifyDeleteChannel());
+    }
+  }, [isShowNotifyDeleteChannel]);
+
+
 
   return (
     <div className="h-100">
@@ -125,6 +210,9 @@ export const HomePage = () => {
           {isShowModalAddChannel && <ModalAddChannel />}
           {isShowModalRenameChannel && <ModalRenameChannel />}
           {isShowModalDeleteChannel && <ModalDeleteChannel />}
+        </div>
+        <div className="Toastify">
+          <ToastContainer />
         </div>
       </div>
     </div>

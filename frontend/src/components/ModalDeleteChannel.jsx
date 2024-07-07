@@ -10,6 +10,7 @@ import {
   getActiveChannelForDelete,
   setShowModalDeleteChannel,
   setDeleteChannel,
+  setShowNotifyDeleteChannel,
 } from '../slices/channelsSlice.js';
 import { deleteMessagesDuringDeleteChannel } from '../slices/messagesSlice.js';
 import axios from 'axios';
@@ -53,6 +54,7 @@ const ModalDeleteChannel = () => {
         dispatch(deleteMessagesDuringDeleteChannel({ id: response.data.id }));
         handleSetShowModalDeleteChannel();
         dispatch(setActiveChannel(1)); // После удаления сделать активным дефолтный канал
+        dispatch(setShowNotifyDeleteChannel());
       }
     }
     catch (e) {
@@ -80,7 +82,7 @@ const ModalDeleteChannel = () => {
           <Modal.Title>{t('channels.channelDelete')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p className="lead">{t('channels.areYouSure')}?</p>
+          <p className="lead">{t('channels.areYouSure')}</p>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleSetShowModalDeleteChannel}>
                 {t('channels.cancelButton')}

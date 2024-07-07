@@ -31,6 +31,9 @@ export default {
         sendButton: 'Отправить',
         noChannels: 'Каналы отсутствуют',
         areYouSure: 'Вы уверены?',
+        notifyAdd: 'Канал создан',
+        notifyRename: 'Канал переименован',
+        notifyDelete: 'Канал удален',
       },
       messages: {
         counter: {

@@ -11,6 +11,7 @@ import { getUser, getToken } from '../slices/authorizationSlice.js';
 import { getActiveChannelId, getActiveChannelName } from '../slices/channelsSlice.js';
 import axios from 'axios';
 import routes from '../routes.js';
+import censorFunc from '../utils/censor.js';
 
 const socket = io('http://localhost:3000');
 
@@ -45,8 +46,9 @@ const Messages = () => {
   const countOfMessages = useSelector((state) => getCountOfMessages(state, activeChannelId));
 
   const textMessageToNewMessage = (textValue, channelId, username) => {
+    const filteredTextValue = censorFunc(textValue);
     return {
-      body: textValue,
+      body: filteredTextValue,
       channelId,
       username,
     }

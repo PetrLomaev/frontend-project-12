@@ -11,6 +11,7 @@ import routes from '../routes.js';
 import { getToken } from '../slices/authorizationSlice.js';
 //import { io } from 'socket.io-client';
 import * as yup from 'yup';
+import censorFunc from '../utils/censor.js';
 
 //const socket = io('http://localhost:3000');
 
@@ -28,7 +29,8 @@ const ModalAddChannel = () => {
 
   // Функция для добавления канала по имени и последующей его записи в state
   const handleAddChannel = async (name, token) => {
-    const newChannel = { name };
+    const filteredName = censorFunc(name);
+    const newChannel = { name: filteredName };
     try {
       const response = await axios.post(routes.channelsPath(), newChannel, {
         headers: {

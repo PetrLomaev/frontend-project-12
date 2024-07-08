@@ -17,6 +17,7 @@ import routes from '../routes.js';
 import { getToken } from '../slices/authorizationSlice.js';
 //import { io } from 'socket.io-client';
 import * as yup from 'yup';
+import censorFunc from '../utils/censor.js';
 
 //const socket = io('http://localhost:3000');
 
@@ -36,7 +37,8 @@ const ModalRenameChannel = () => {
 
   // Функция для переименования канала по имени и последующей его перезаписи в state
   const handleSetNewChannelName = async (newName, userToken, changingChannelId) => {
-    const newEdditedChannelName = { name: newName };
+    const filteredName = censorFunc(newName);
+    const newEdditedChannelName = { name: filteredName };
     const pathToRenameChannel = [routes.channelsPath(), changingChannelId].join('/');
     try {
       const response = await axios.patch(pathToRenameChannel, newEdditedChannelName, {

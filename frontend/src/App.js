@@ -1,29 +1,37 @@
 /* eslint-disable */
 
-import React from 'react'
-import { Provider, ErrorBoundary } from '@rollbar/react' // Provider imports 'rollbar'
+//import logo from './logo.svg';
+import './App.css';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { LoginPage } from './components/LoginPage';
+import { HomePage } from './components/HomePage';
+import { SignUpPage } from './components/SignUpPage';
+import Page404 from './components/Page404';
+import store from '../src/slices/configureStore';
+import { Provider } from 'react-redux';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './i18next';
 
-const rollbarConfig = {
-  accessToken: '206a4d562e91496ea0a8654923663f9c',
-  environment: 'testenv',
-}
+const App = () => {
 
-function TestError() {
-  const a = null
-  return a.hello()
-}
-
-// Provider instantiates Rollbar client instance handling any uncaught errors or unhandled promises in the browser
-// ErrorBoundary catches all React errors in the tree below and logs them to Rollbar
-export default function App() {
   return (
-    <Provider config={rollbarConfig}>
-      <ErrorBoundary>
-        <TestError />
-      </ErrorBoundary>
-    </Provider>
-  )
+    <div className="App">
+      <Provider store={store}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="*" element={<Page404 />} />
+          </Routes>
+        </BrowserRouter>
+      </Provider>
+    </div>
+  );
 }
+
+export default App;
 
 /*
 function App() {

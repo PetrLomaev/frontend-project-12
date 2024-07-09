@@ -10,7 +10,7 @@ import Rollbar from 'rollbar';
 const rollbarInit = {
   accessToken: 'e985afdb5a7842339bfbbdb802503b0b',
   environment: 'testenv',
-}
+};
 
 const rollbarConfig = new Rollbar(rollbarInit);
 

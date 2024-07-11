@@ -12,6 +12,8 @@ import store from '../src/slices/configureStore';
 import { Provider } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './i18next';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
 
@@ -25,6 +27,7 @@ const App = () => {
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="*" element={<Page404 />} />
           </Routes>
+          <ToastContainer />
         </BrowserRouter>
       </Provider>
     </div>

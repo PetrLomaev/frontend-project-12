@@ -1,4 +1,4 @@
-/* eslint-disable */
+
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +9,18 @@ import { useNavigate } from 'react-router-dom';
 import routes from '../routes.js';
 import signUpImage from '../images/signup-image.jpg';
 import * as yup from 'yup';
-import { getUser, getIsAuthorization, getToken, setToken, setUser, logIn, logOut } from '../slices/authorizationSlice.js';
+import { setToken,
+  logIn,
+  logOut,
+  setShowNotifyNetworkError,
+  getShowNotifyNetworkError,
+  setShowNotifyServerError,
+  getShowNotifyServerError
+} from '../slices/authorizationSlice.js';
 import { setSignUp, setShowSignUpPage, getRegisteredUsers, getShowSignUpPage } from '../slices/signUpSlice.js';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import notifyError from '../utils/notifyError.js';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export const SignUpPage = () => {
@@ -36,6 +45,9 @@ export const SignUpPage = () => {
       .required('Обязательное поле')
       .oneOf([yup.ref("password"), null], t('errors.passwordsMustMatch')),
   });
+
+  const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
+  const isShowNotifyServerError = useSelector(getShowNotifyServerError)
   
   const handleSubmit = async (formValue) => {
     // Попытка отправить форму
@@ -62,11 +74,33 @@ export const SignUpPage = () => {
         navigate('/signup');
       }
     }
-    catch (e) {
-      console.log(e);
-      setShowNameError(true);
+    catch (error) {
+      if (error.response.status === 409) {
+        setShowNameError(true);
+      }
+      if (error.code === 'ERR_NETWORK') {
+        dispatch(setShowNotifyNetworkError());
+      }
+      if (error.response.status >= 500) {
+        dispatch(setShowNotifyServerError());
+      }
+      console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (isShowNotifyNetworkError) {
+      notifyError(t('errors.notifyNetworkError'));
+      dispatch(setShowNotifyNetworkError());
+    }
+  }, [isShowNotifyNetworkError]);
+
+  useEffect(() => {
+    if (isShowNotifyServerError) {
+      notifyError(t('errors.notifyServerError'));
+      dispatch(setShowNotifyServerError());
+    }
+  }, [isShowNotifyServerError]);
 
   const formInit = useFormik({
     initialValues: {
@@ -106,7 +140,7 @@ export const SignUpPage = () => {
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
                         value={formInit.values.username}
-                        isInvalid={formInit.touched.username && (!!formInit.errors.username )}
+                        isInvalid={formInit.touched.username && !!formInit.errors.username}
                       />
                       <Form.Control.Feedback type="invalid">
                         {formInit.errors.username}
@@ -122,7 +156,7 @@ export const SignUpPage = () => {
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
                         value={formInit.values.password}
-                        isInvalid={formInit.touched.password && (!!formInit.errors.password )}
+                        isInvalid={formInit.touched.password && !!formInit.errors.password}
                       />
                       <Form.Control.Feedback type="invalid">
                         {formInit.errors.password}
@@ -138,7 +172,7 @@ export const SignUpPage = () => {
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
                         value={formInit.values.confirmPassword}
-                        isInvalid={formInit.touched.confirmPassword && (!!formInit.errors.confirmPassword )}
+                        isInvalid={formInit.touched.confirmPassword && !!formInit.errors.confirmPassword}
                       />
                       <Form.Control.Feedback type="invalid">
                         {formInit.errors.confirmPassword}
@@ -159,6 +193,4 @@ export const SignUpPage = () => {
         </div>
       </div>
   );
-
-
 };

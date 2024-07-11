@@ -20,6 +20,7 @@ export default {
       },
       channels: {
         channels: 'Каналы',
+        control: 'Управление каналом',
         channelName: 'Имя канала',
         channelNewName: 'Новое имя канала',
         channelRename: 'Переименовать канал',
@@ -27,6 +28,7 @@ export default {
         deleteButton: 'Удалить',
         renameButton: 'Переименовать',
         addButton: 'Добавить',
+        addButtonSymbol: '+',
         cancelButton: 'Отменить',
         sendButton: 'Отправить',
         noChannels: 'Каналы отсутствуют',
@@ -47,7 +49,7 @@ export default {
       },
       signUpPage: {
         header: 'Регистрация',
-        yourNickname: 'Ваш ник',
+        yourNickname: 'Имя пользователя',
         yourPassword: 'Пароль',
         confirmYourPassword: 'Подтвердите пароль',
         register: 'Зарегистрироваться',
@@ -68,6 +70,8 @@ export default {
         isUnique: 'Должно быть уникальным',
         passwordsMustMatch: 'Пароли должны совпадать',
         userAlreadyExists: 'Такой пользователь уже существует',
+        notifyNetworkError: 'Ошибка соединения',
+        notifyServerError: 'Ошибка сервера',
       },
     },
   };

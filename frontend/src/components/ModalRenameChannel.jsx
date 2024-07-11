@@ -1,4 +1,4 @@
-/* eslint-disable */
+
 
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Modal } from 'react-bootstrap';
@@ -14,10 +14,12 @@ import {
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import axios from 'axios';
 import routes from '../routes.js';
-import { getToken } from '../slices/authorizationSlice.js';
+import { getToken, setShowNotifyNetworkError, getShowNotifyNetworkError, setShowNotifyServerError, getShowNotifyServerError } from '../slices/authorizationSlice.js';
 //import { io } from 'socket.io-client';
 import * as yup from 'yup';
 import censorFunc from '../utils/censor.js';
+import notifyError from '../utils/notifyError.js';
+import 'react-toastify/dist/ReactToastify.css';
 
 //const socket = io('http://localhost:3000');
 
@@ -27,6 +29,8 @@ const ModalRenameChannel = () => {
 
   // Вытащить значения из authorizationSlice
   const token = useSelector(getToken);
+  const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
+  const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
   const inputRef = useRef(null);
 
@@ -53,8 +57,14 @@ const ModalRenameChannel = () => {
         dispatch(setShowNotifyRenameChannel());
       }
     }
-    catch (e) {
-      console.log(e);
+    catch (error) {
+      console.log(error);
+      if (error.code === 'ERR_NETWORK') {
+        dispatch(setShowNotifyNetworkError());
+      }
+      if (error.response.status >= 500) {
+        dispatch(setShowNotifyServerError());
+      }
     }
   };
   /*
@@ -77,6 +87,20 @@ const ModalRenameChannel = () => {
       }
     }, 100);
   }, []);
+
+  useEffect(() => {
+    if (isShowNotifyNetworkError) {
+      notifyError(t('errors.notifyNetworkError'));
+      dispatch(setShowNotifyNetworkError());
+    }
+  }, [isShowNotifyNetworkError]);
+
+  useEffect(() => {
+    if (isShowNotifyServerError) {
+      notifyError(t('errors.notifyServerError'));
+      dispatch(setShowNotifyServerError());
+    }
+  }, [isShowNotifyServerError]);
 
   const channels = useSelector(getChannels);
   const activeChannelForRename = useSelector(getActiveChannelForRename);

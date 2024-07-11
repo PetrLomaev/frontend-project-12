@@ -1,4 +1,4 @@
-/* eslint-disable */
+
 import axios from 'axios';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -45,27 +45,16 @@ export const HomePage = () => {
 
   // Вытащить значения из authorizationSlice
   const token = useSelector(getToken);
-  console.log('token in HomePage>>>', token);
   const user = useSelector(getUser);
-  console.log('user>>>', user);
   const isAuthorization = useSelector(getIsAuthorization);
-  console.log('isAuthorization>>>', isAuthorization);
 
   // Вытащить значения из channelsSlice
-  const channels = useSelector(getChannels);
   const isShowModalAddChannel = useSelector(getShowModalAddChannel);
-  console.log('isShowModalAddChannel>>>', isShowModalAddChannel);
   const isShowModalRenameChannel = useSelector(getShowModalRenameChannel);
   const isShowModalDeleteChannel = useSelector(getShowModalDeleteChannel);
   const isShowNotifyAddChannel = useSelector(getShowNotifyAddChannel);
   const isShowNotifyRenameChannel = useSelector(getShowNotifyRenameChannel);
   const isShowNotifyDeleteChannel = useSelector(getShowNotifyDeleteChannel);
-
-  // Вытащить значения из messagesSlice
-  const messages = useSelector(getMessages);
-  console.log('messages>>>', messages);
-  const countOfMessages = useSelector(getCountOfMessages);
-  console.log('countOfMessages>>>', countOfMessages);
 
   // Функция для получения массива всех каналов и последующей их записи в state
   const getChannelsData = async (token) => {
@@ -107,11 +96,11 @@ export const HomePage = () => {
   useEffect(() => {
     getChannelsData(token);
   }, [dispatch]);
-  /*
+  
   useEffect(() => {
     getMessagesData(token);
   }, [dispatch]);
-  */
+  
   useEffect(() => {
     if (!isAuthorization) {
       navigate('/login');
@@ -211,9 +200,7 @@ export const HomePage = () => {
           {isShowModalRenameChannel && <ModalRenameChannel />}
           {isShowModalDeleteChannel && <ModalDeleteChannel />}
         </div>
-        <div className="Toastify">
-          <ToastContainer />
-        </div>
+
       </div>
     </div>
   );

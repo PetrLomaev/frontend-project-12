@@ -1,4 +1,4 @@
-/* eslint-disable */
+
 
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Modal } from 'react-bootstrap';
@@ -15,7 +15,9 @@ import {
 import { deleteMessagesDuringDeleteChannel } from '../slices/messagesSlice.js';
 import axios from 'axios';
 import routes from '../routes.js';
-import { getToken } from '../slices/authorizationSlice.js';
+import { getToken, setShowNotifyNetworkError, getShowNotifyNetworkError, setShowNotifyServerError, getShowNotifyServerError } from '../slices/authorizationSlice.js';
+import notifyError from '../utils/notifyError.js';
+import 'react-toastify/dist/ReactToastify.css';
 //import { io } from 'socket.io-client';
 
 //const socket = io('http://localhost:3000');
@@ -26,6 +28,8 @@ const ModalDeleteChannel = () => {
 
   // Вытащить значения из authorizationSlice
   const token = useSelector(getToken);
+  const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
+  const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
   // При закрытии окна - изменяем в стейте showModalDeleteChannel на true или false
   const handleSetShowModalDeleteChannel = () => {
@@ -57,10 +61,31 @@ const ModalDeleteChannel = () => {
         dispatch(setShowNotifyDeleteChannel());
       }
     }
-    catch (e) {
-      console.log(e);
+    catch (error) {
+      console.log(error);
+      if (error.code === 'ERR_NETWORK') {
+        dispatch(setShowNotifyNetworkError());
+      }
+      if (error.response.status >= 500) {
+        dispatch(setShowNotifyServerError());
+      }
     }
   };
+
+  useEffect(() => {
+    if (isShowNotifyNetworkError) {
+      notifyError(t('errors.notifyNetworkError'));
+      dispatch(setShowNotifyNetworkError());
+    }
+  }, [isShowNotifyNetworkError]);
+
+  useEffect(() => {
+    if (isShowNotifyServerError) {
+      notifyError(t('errors.notifyServerError'));
+      dispatch(setShowNotifyServerError());
+    }
+  }, [isShowNotifyServerError]);
+
   /*
   useEffect(() => {
     socket.on('newChannel', (currentNewChannel) => {

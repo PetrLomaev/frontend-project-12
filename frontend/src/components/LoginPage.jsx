@@ -6,7 +6,7 @@ import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useSelector, useDispatch } from 'react-redux';
-import routes from '../routes.js';
+import routes from '../routes';
 import startImage from '../images/start-image.jpeg';
 import {
   setToken,
@@ -16,7 +16,7 @@ import {
   setShowNotifyServerError,
   getShowNotifyServerError,
 } from '../slices/authorizationSlice';
-import notifyError from '../utils/notifyError.js';
+import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
 const handleSubmit = async (formValue, setShowError, navigate, dispatch) => {
@@ -51,8 +51,7 @@ const handleSubmit = async (formValue, setShowError, navigate, dispatch) => {
   }
 };
 
-export const LoginPage = () => {
-
+const LoginPage = () => {
   const { t } = useTranslation();
   const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
@@ -66,14 +65,14 @@ export const LoginPage = () => {
       notifyError(t('errors.notifyNetworkError'));
       dispatch(setShowNotifyNetworkError());
     }
-  }, [isShowNotifyNetworkError]);
+  }, [isShowNotifyNetworkError, dispatch, t]);
 
   useEffect(() => {
     if (isShowNotifyServerError) {
       notifyError(t('errors.notifyServerError'));
       dispatch(setShowNotifyServerError());
     }
-  }, [isShowNotifyServerError]);
+  }, [isShowNotifyServerError, dispatch, t]);
 
   const schema = yup.object().shape({
     username: yup.string().required(t('errors.requiredField')),
@@ -151,4 +150,6 @@ export const LoginPage = () => {
       </div>
     </div>
   );
-}
+};
+
+export default LoginPage;

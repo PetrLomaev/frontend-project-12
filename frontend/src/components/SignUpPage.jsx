@@ -1,30 +1,26 @@
-
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useFormik, ErrorMessage } from 'formik';
-// import { Formik, Form, Field } from 'formik';
+import { useFormik } from 'formik';
 import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import routes from '../routes.js';
-import signUpImage from '../images/signup-image.jpg';
 import * as yup from 'yup';
-import { setToken,
+import { useDispatch, useSelector } from 'react-redux';
+import routes from '../routes';
+import signUpImage from '../images/signup-image.jpg';
+import {
+  setToken,
   logIn,
   logOut,
   setShowNotifyNetworkError,
   getShowNotifyNetworkError,
   setShowNotifyServerError,
-  getShowNotifyServerError
-} from '../slices/authorizationSlice.js';
-import { setSignUp, setShowSignUpPage, getRegisteredUsers, getShowSignUpPage } from '../slices/signUpSlice.js';
-import { useDispatch, useSelector } from 'react-redux';
-import notifyError from '../utils/notifyError.js';
+  getShowNotifyServerError,
+} from '../slices/authorizationSlice';
+import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-export const SignUpPage = () => {
-
+const SignUpPage = () => {
   const [nameError, setShowNameError] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -43,23 +39,22 @@ export const SignUpPage = () => {
     confirmPassword: yup
       .string()
       .required('Обязательное поле')
-      .oneOf([yup.ref("password"), null], t('errors.passwordsMustMatch')),
+      .oneOf([yup.ref('password'), null], t('errors.passwordsMustMatch')),
   });
 
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
-  const isShowNotifyServerError = useSelector(getShowNotifyServerError)
-  
+  const isShowNotifyServerError = useSelector(getShowNotifyServerError);
+
   const handleSubmit = async (formValue) => {
-    // Попытка отправить форму
     try {
       const response = await axios.post(routes.signUpPath(), {
         username: formValue.username,
         password: formValue.password,
       });
-      const tokenValueInStorage = localStorage.getItem('token');
-      
+      // const tokenValueInStorage = localStorage.getItem('token');
+
       if (response.data) {
-        const token = response.data.token;
+        const { token } = response.data;
         if (localStorage.getItem('token')) {
           localStorage.removeItem('token');
           dispatch(logOut());
@@ -73,8 +68,7 @@ export const SignUpPage = () => {
         setShowNameError(true);
         navigate('/signup');
       }
-    }
-    catch (error) {
+    } catch (error) {
       if (error.response.status === 409) {
         setShowNameError(true);
       }
@@ -93,14 +87,14 @@ export const SignUpPage = () => {
       notifyError(t('errors.notifyNetworkError'));
       dispatch(setShowNotifyNetworkError());
     }
-  }, [isShowNotifyNetworkError]);
+  }, [isShowNotifyNetworkError, dispatch, t]);
 
   useEffect(() => {
     if (isShowNotifyServerError) {
       notifyError(t('errors.notifyServerError'));
       dispatch(setShowNotifyServerError());
     }
-  }, [isShowNotifyServerError]);
+  }, [isShowNotifyServerError, dispatch, t]);
 
   const formInit = useFormik({
     initialValues: {
@@ -118,17 +112,17 @@ export const SignUpPage = () => {
           <a className="navbar-brand" href="/">{t('headerChat.header')}</a>
         </div>
       </nav>
-  
+
       <div className="container-fluid h-100">
         <div className="row justify-content-center align-content-center h-100">
           <div className="col-12 col-md-6 col-xxl-6">
             <div className="card shadow-sm">
-              <div className="card-body row p-5">
+              <div className="card-body d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
                 <div>
-                  <img src={signUpImage} className="rounded-circle" alt={t('signUpPage.header')}></img>
+                  <img src={signUpImage} className="rounded-circle" alt={t('signUpPage.header')} />
                 </div>
                 <div className="col-12 col-md-6">
-                <Form onSubmit={formInit.handleSubmit}>
+                  <Form onSubmit={formInit.handleSubmit}>
                     <h1 className="text-center mb-4">{t('signUpPage.header')}</h1>
                     <Form.Group className="mb-3">
                       <Form.Control
@@ -140,7 +134,7 @@ export const SignUpPage = () => {
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
                         value={formInit.values.username}
-                        isInvalid={formInit.touched.username && !!formInit.errors.username}
+                        isInvalid={formInit.touched.username && (!!formInit.errors.username)}
                       />
                       <Form.Control.Feedback type="invalid">
                         {formInit.errors.username}
@@ -156,13 +150,13 @@ export const SignUpPage = () => {
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
                         value={formInit.values.password}
-                        isInvalid={formInit.touched.password && !!formInit.errors.password}
+                        isInvalid={formInit.touched.password && (!!formInit.errors.password)}
                       />
                       <Form.Control.Feedback type="invalid">
                         {formInit.errors.password}
                       </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group className="mb-3" >
+                    <Form.Group className="mb-3">
                       <Form.Control
                         name="confirmPassword"
                         type="password"
@@ -172,7 +166,8 @@ export const SignUpPage = () => {
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
                         value={formInit.values.confirmPassword}
-                        isInvalid={formInit.touched.confirmPassword && !!formInit.errors.confirmPassword}
+                        isInvalid={formInit.touched.confirmPassword
+                          && (!!formInit.errors.confirmPassword)}
                       />
                       <Form.Control.Feedback type="invalid">
                         {formInit.errors.confirmPassword}
@@ -182,15 +177,17 @@ export const SignUpPage = () => {
                       {t('signUpPage.register')}
                     </Button>
                     {nameError && (
-                      <div className="invalid-feedback" style={{ display: 'block', color: 'red' }}>{t('errors.userAlreadyExists')}</div>
+                    <div className="invalid-feedback" style={{ display: 'block', color: 'red' }}>{t('errors.userAlreadyExists')}</div>
                     )}
                   </Form>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
   );
 };
+
+export default SignUpPage;

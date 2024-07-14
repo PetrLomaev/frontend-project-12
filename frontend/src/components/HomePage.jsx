@@ -1,11 +1,11 @@
-
 import axios from 'axios';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getUser, getIsAuthorization, getToken, setToken, logOut } from '../slices/authorizationSlice.js';
+import { useSelector, useDispatch } from 'react-redux';
+import { toast, Bounce } from 'react-toastify';
+import { getIsAuthorization, getToken, logOut } from '../slices/authorizationSlice';
 import {
-  getChannels,
   setChannels,
   getShowModalAddChannel,
   getShowModalRenameChannel,
@@ -16,18 +16,15 @@ import {
   setShowNotifyAddChannel,
   setShowNotifyRenameChannel,
   setShowNotifyDeleteChannel,
-} from '../slices/channelsSlice.js';
-import { getMessages, getCountOfMessages, loadMessages } from '../slices/messagesSlice.js';
-import { useSelector, useDispatch } from 'react-redux';
-import Channels from './Channels.jsx';
-import Messages from './Messages.jsx';
-import ModalAddChannel from './ModalAddChannel.jsx';
-import ModalRenameChannel from './ModalRenameChannel.jsx';
-import ModalDeleteChannel from './ModalDeleteChannel.jsx';
-//import useAuth from '../hooks/index.jsx';
-import routes from '../routes.js';
+} from '../slices/channelsSlice';
+import { loadMessages } from '../slices/messagesSlice';
+import Channels from './Channels';
+import Messages from './Messages';
+import ModalAddChannel from './ModalAddChannel';
+import ModalRenameChannel from './ModalRenameChannel';
+import ModalDeleteChannel from './ModalDeleteChannel';
+import routes from '../routes';
 import '../App.css';
-import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 /*
@@ -38,17 +35,14 @@ const handleClick = () => {
 };
 */
 
-export const HomePage = () => {
+const HomePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // Вытащить значения из authorizationSlice
   const token = useSelector(getToken);
-  const user = useSelector(getUser);
   const isAuthorization = useSelector(getIsAuthorization);
 
-  // Вытащить значения из channelsSlice
   const isShowModalAddChannel = useSelector(getShowModalAddChannel);
   const isShowModalRenameChannel = useSelector(getShowModalRenameChannel);
   const isShowModalDeleteChannel = useSelector(getShowModalDeleteChannel);
@@ -56,121 +50,109 @@ export const HomePage = () => {
   const isShowNotifyRenameChannel = useSelector(getShowNotifyRenameChannel);
   const isShowNotifyDeleteChannel = useSelector(getShowNotifyDeleteChannel);
 
-  // Функция для получения массива всех каналов и последующей их записи в state
-  const getChannelsData = async (token) => {
-    try {
-      const responseChannels = await axios.get(routes.channelsPath(), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const channelsData = responseChannels.data;
-      dispatch(setChannels(channelsData));
-    }
-    catch (e) {
-      console.log(e);
-    }
-  };
-
-  // Функция для получения массива всех сообщений и последующей их записи в state
-  const getMessagesData = async (token) => {
-    try {
-      const responseMessages = await axios.get(routes.messagesPath(), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const messagesData = responseMessages.data;
-      dispatch(loadMessages(messagesData));
-    }
-    catch (e) {
-      console.log(e);
-    }
-  };
-
-  // Функция для кнопки выхода из чата
   const handleLogOut = () => {
     dispatch(logOut());
   };
 
   useEffect(() => {
+    const getChannelsData = async (userToken) => {
+      try {
+        const responseChannels = await axios.get(routes.channelsPath(), {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        const channelsData = responseChannels.data;
+        dispatch(setChannels(channelsData));
+      } catch (e) {
+        console.log(e);
+      }
+    };
     getChannelsData(token);
-  }, [dispatch]);
-  
+  }, [token, dispatch]);
+
   useEffect(() => {
+    const getMessagesData = async (userToken) => {
+      try {
+        const responseMessages = await axios.get(routes.messagesPath(), {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        const messagesData = responseMessages.data;
+        dispatch(loadMessages(messagesData));
+      } catch (e) {
+        console.log(e);
+      }
+    };
     getMessagesData(token);
-  }, [dispatch]);
-  
+  }, [token, dispatch]);
+
   useEffect(() => {
     if (!isAuthorization) {
       navigate('/login');
     }
   });
 
-  const notifyAddChannel = () => {
-    toast.success(t('channels.notifyAdd'), {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      transition: Bounce,
-    });
-  };
-
-  const notifyRenameChannel = () => {
-    toast.success(t('channels.notifyRename'), {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      transition: Bounce,
-    });
-  };
-
-  const notifyDeleteChannel = () => {
-    toast.success(t('channels.notifyDelete'), {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      transition: Bounce,
-    });
-  };
-
   useEffect(() => {
+    const notifyAddChannel = () => {
+      toast.success(t('channels.notifyAdd'), {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    };
     if (isShowNotifyAddChannel) {
       notifyAddChannel();
       dispatch(setShowNotifyAddChannel());
     }
-  }, [isShowNotifyAddChannel]);
+  }, [isShowNotifyAddChannel, dispatch, t]);
 
   useEffect(() => {
+    const notifyRenameChannel = () => {
+      toast.success(t('channels.notifyRename'), {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    };
     if (isShowNotifyRenameChannel) {
       notifyRenameChannel();
       dispatch(setShowNotifyRenameChannel());
     }
-  }, [isShowNotifyRenameChannel]);
+  }, [isShowNotifyRenameChannel, dispatch, t]);
 
   useEffect(() => {
+    const notifyDeleteChannel = () => {
+      toast.success(t('channels.notifyDelete'), {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce,
+      });
+    };
     if (isShowNotifyDeleteChannel) {
       notifyDeleteChannel();
       dispatch(setShowNotifyDeleteChannel());
     }
-  }, [isShowNotifyDeleteChannel]);
-
-
+  }, [isShowNotifyDeleteChannel, dispatch, t]);
 
   return (
     <div className="h-100">
@@ -182,7 +164,7 @@ export const HomePage = () => {
                 {t('headerChat.header')}
               </a>
               <button type="button" className="btn btn-primary" onClick={handleLogOut}>
-                <a>{t('homePage.exitButton')}</a>
+                {t('homePage.exitButton')}
               </button>
             </div>
           </nav>
@@ -205,3 +187,5 @@ export const HomePage = () => {
     </div>
   );
 };
+
+export default HomePage;

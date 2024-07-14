@@ -5,49 +5,54 @@ import { Formik, Field, Form } from 'formik';
 import { Button } from 'react-bootstrap';
 import { io } from 'socket.io-client';
 import axios from 'axios';
-import { getMessages, getCountOfMessages, addMessage } from '../slices/messagesSlice.js';
-import { getUser, getToken, setShowNotifyNetworkError, getShowNotifyNetworkError, setShowNotifyServerError, getShowNotifyServerError } from '../slices/authorizationSlice.js';
-import { getActiveChannelId, getActiveChannelName } from '../slices/channelsSlice.js';
-import routes from '../routes.js';
-import censorFunc from '../utils/censor.js';
-import notifyError from '../utils/notifyError.js';
+import { getMessages, getCountOfMessages, addMessage } from '../slices/messagesSlice';
+import {
+  getUser,
+  getToken,
+  setShowNotifyNetworkError,
+  getShowNotifyNetworkError,
+  setShowNotifyServerError,
+  getShowNotifyServerError,
+} from '../slices/authorizationSlice';
+import { getActiveChannelId, getActiveChannelName } from '../slices/channelsSlice';
+import routes from '../routes';
+import censorFunc from '../utils/censor';
+import notifyError from '../utils/notifyError';
+import '../App.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 const socket = io('http://localhost:3000');
 
-const handleSubmitMessage = async (newMessage, token) => {
-  try {
-    await axios.post(routes.messagesPath(), newMessage, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  } catch (error) {
-    if (error.code === 'ERR_NETWORK') {
-      dispatch(setShowNotifyNetworkError());
-    }
-    if (error.response.status >= 500) {
-      dispatch(setShowNotifyServerError());
-    }
-    console.log(error);
-  }
-};
-
-export const Messages = () => {
+const Messages = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  // Вытащить значения из authorizationSlice
+  const handleSubmitMessage = async (newMessage, userToken) => {
+    try {
+      await axios.post(routes.messagesPath(), newMessage, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+    } catch (error) {
+      if (error.code === 'ERR_NETWORK') {
+        dispatch(setShowNotifyNetworkError());
+      }
+      if (error.response.status >= 500) {
+        dispatch(setShowNotifyServerError());
+      }
+      console.log(error);
+    }
+  };
+
   const user = useSelector(getUser);
   const token = useSelector(getToken);
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
-  // Вытащить значения из channelsSlice
   const activeChannelName = useSelector(getActiveChannelName);
   const activeChannelId = useSelector(getActiveChannelId);
 
-  // Вытащить значения из messagesSlice
   const messages = useSelector(getMessages);
   const countOfMessages = useSelector((state) => getCountOfMessages(state, activeChannelId));
 
@@ -75,34 +80,33 @@ export const Messages = () => {
       notifyError(t('errors.notifyNetworkError'));
       dispatch(setShowNotifyNetworkError());
     }
-  }, [isShowNotifyNetworkError]);
+  }, [isShowNotifyNetworkError, dispatch, t]);
 
   useEffect(() => {
     if (isShowNotifyServerError) {
       notifyError(t('errors.notifyServerError'));
       dispatch(setShowNotifyServerError());
     }
-  }, [isShowNotifyServerError]);
+  }, [isShowNotifyServerError, dispatch, t]);
 
   return (
     <div className="d-flex flex-column h-100">
       <div className="bg-light mb-4 p-3 shadow-sm small">
         <p className="m-0">
           <b>
-            #
-            {activeChannelName}
+            {' '}
+            {`# ${activeChannelName}`}
           </b>
         </p>
         <span className="text-muted">{t('messages.counter.count', { count: countOfMessages })}</span>
       </div>
-      <div id="messages-box" className="chat-messages overflow-auto px-5 ">
+      <div id="messages-box" className="chat-messages overflow-auto px-5">
         {messages
           .filter((message) => message.channelId === activeChannelId)
           .map((message) => (
-            <div className="text-break mb-2">
-              <b key={message.channelId}>{message.username}</b>
-              :
-              {message.body}
+            <div key={message.id} className="text-break mb-2">
+              <b>{message.username}</b>
+              {`: ${message.body}`}
             </div>
           ))}
       </div>
@@ -144,6 +148,6 @@ export const Messages = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Messages;

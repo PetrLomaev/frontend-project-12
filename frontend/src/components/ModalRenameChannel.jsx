@@ -1,45 +1,48 @@
-
-
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import {
+  Formik, Field, Form, ErrorMessage,
+} from 'formik';
+import axios from 'axios';
+import * as yup from 'yup';
 import {
   getChannels,
   setShowModalRenameChannel,
   setNewChannelName,
   getActiveChannelForRename,
   setShowNotifyRenameChannel,
-} from '../slices/channelsSlice.js';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
-import axios from 'axios';
-import routes from '../routes.js';
-import { getToken, setShowNotifyNetworkError, getShowNotifyNetworkError, setShowNotifyServerError, getShowNotifyServerError } from '../slices/authorizationSlice.js';
-//import { io } from 'socket.io-client';
-import * as yup from 'yup';
-import censorFunc from '../utils/censor.js';
-import notifyError from '../utils/notifyError.js';
+} from '../slices/channelsSlice';
+import routes from '../routes';
+import {
+  getToken,
+  setShowNotifyNetworkError,
+  getShowNotifyNetworkError,
+  setShowNotifyServerError,
+  getShowNotifyServerError,
+} from '../slices/authorizationSlice';
+// import { io } from 'socket.io-client';
+import censorFunc from '../utils/censor';
+import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
-//const socket = io('http://localhost:3000');
+// const socket = io('http://localhost:3000');
 
 const ModalRenameChannel = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  // Вытащить значения из authorizationSlice
   const token = useSelector(getToken);
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
   const inputRef = useRef(null);
 
-  // При закрытии окна - изменяем в стейте showModalRenameChannel на true или false
   const handleSetShowModalRenameChannel = () => {
     dispatch(setShowModalRenameChannel());
   };
 
-  // Функция для переименования канала по имени и последующей его перезаписи в state
   const handleSetNewChannelName = async (newName, userToken, changingChannelId) => {
     const filteredName = censorFunc(newName);
     const newEdditedChannelName = { name: filteredName };
@@ -51,13 +54,11 @@ const ModalRenameChannel = () => {
         },
       });
       if (response.data) {
-        //dispatch(setActiveChannel(response.data.id));
         dispatch(setNewChannelName({ id: response.data.id, newName: response.data.name }));
         handleSetShowModalRenameChannel();
         dispatch(setShowNotifyRenameChannel());
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
       if (error.code === 'ERR_NETWORK') {
         dispatch(setShowNotifyNetworkError());
@@ -93,44 +94,44 @@ const ModalRenameChannel = () => {
       notifyError(t('errors.notifyNetworkError'));
       dispatch(setShowNotifyNetworkError());
     }
-  }, [isShowNotifyNetworkError]);
+  }, [isShowNotifyNetworkError, dispatch, t]);
 
   useEffect(() => {
     if (isShowNotifyServerError) {
       notifyError(t('errors.notifyServerError'));
       dispatch(setShowNotifyServerError());
     }
-  }, [isShowNotifyServerError]);
+  }, [isShowNotifyServerError, dispatch, t]);
 
   const channels = useSelector(getChannels);
   const activeChannelForRename = useSelector(getActiveChannelForRename);
 
   const isUniqueChannelName = (name) => {
     const checkCannels = channels.filter((channel) => channel.name === name);
-    return checkCannels.length > 0 ? false : true;
+    return !(checkCannels.length > 0);
   };
 
   const schema = yup.object().shape({
     renameChannelName: yup.string()
-    .required(t('errors.notBeEmpty'))
-    .min(3, t('errors.min3'))
-    .max(20, t('errors.max20'))
-    .test('is-unique', t('errors.isUnique'), (value) => isUniqueChannelName(value))
+      .required(t('errors.notBeEmpty'))
+      .min(3, t('errors.min3'))
+      .max(20, t('errors.max20'))
+      .test('is-unique', t('errors.isUnique'), (value) => isUniqueChannelName(value)),
   });
 
   return (
-      <Modal show onHide={handleSetShowModalRenameChannel} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('channels.channelRename')}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Formik
-            initialValues={{ renameChannelName: activeChannelForRename.name }}
-            validationSchema={schema}
-            onSubmit={(values) => {
-              handleSetNewChannelName(values.renameChannelName, token, activeChannelForRename.id);
-            }}
-          >
+    <Modal show onHide={handleSetShowModalRenameChannel} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{t('channels.channelRename')}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Formik
+          initialValues={{ renameChannelName: activeChannelForRename.name }}
+          validationSchema={schema}
+          onSubmit={(values) => {
+            handleSetNewChannelName(values.renameChannelName, token, activeChannelForRename.id);
+          }}
+        >
           {({ handleChange, handleBlur, values }) => (
             <Form noValidate className="mb-2">
               <Field
@@ -160,9 +161,9 @@ const ModalRenameChannel = () => {
               </Modal.Footer>
             </Form>
           )}
-          </Formik>
-        </Modal.Body>
-      </Modal>
+        </Formik>
+      </Modal.Body>
+    </Modal>
   );
 };
 

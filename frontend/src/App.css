@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  height: 100vh;
 }
 
 .App-logo {
@@ -42,6 +43,9 @@
   overflow-y: auto;
 }
 
+#messages-box {
+  text-align: left;
+}
 
 #channels-box {
   overflow-y: auto;
@@ -52,4 +56,14 @@
 
 .nav-item {
   flex: 0 0 auto;
+  width: 100%;
 }
+
+.container {
+  height: 100%;
+}
+
+.bg-light.mb-4.p-3.shadow-sm.small {
+  text-align: left;
+}
+

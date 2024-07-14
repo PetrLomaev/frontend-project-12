@@ -1,26 +1,29 @@
-
-
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 import {
-  getChannels,
   setActiveChannel,
   getActiveChannelForDelete,
   setShowModalDeleteChannel,
   setDeleteChannel,
   setShowNotifyDeleteChannel,
-} from '../slices/channelsSlice.js';
-import { deleteMessagesDuringDeleteChannel } from '../slices/messagesSlice.js';
-import axios from 'axios';
-import routes from '../routes.js';
-import { getToken, setShowNotifyNetworkError, getShowNotifyNetworkError, setShowNotifyServerError, getShowNotifyServerError } from '../slices/authorizationSlice.js';
-import notifyError from '../utils/notifyError.js';
+} from '../slices/channelsSlice';
+import { deleteMessagesDuringDeleteChannel } from '../slices/messagesSlice';
+import routes from '../routes';
+import {
+  getToken,
+  setShowNotifyNetworkError,
+  getShowNotifyNetworkError,
+  setShowNotifyServerError,
+  getShowNotifyServerError,
+} from '../slices/authorizationSlice';
+import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
-//import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 
-//const socket = io('http://localhost:3000');
+// const socket = io('http://localhost:3000');
 
 const ModalDeleteChannel = () => {
   const dispatch = useDispatch();
@@ -39,7 +42,7 @@ const ModalDeleteChannel = () => {
   // Функция для удаления канала по имени и последующего обновления в state
   const handleSetDeleteChannel = async (userToken, deletedChannelId) => {
     const pathToDeleteChannel = [routes.channelsPath(), deletedChannelId].join('/');
-    //const pathToDeleteMessage = [routes.messagesPath(), deletedChannelId].join('/');
+    // const pathToDeleteMessage = [routes.messagesPath(), deletedChannelId].join('/');
     try {
       const response = await axios.delete(pathToDeleteChannel, {
         headers: {
@@ -60,8 +63,7 @@ const ModalDeleteChannel = () => {
         dispatch(setActiveChannel(1)); // После удаления сделать активным дефолтный канал
         dispatch(setShowNotifyDeleteChannel());
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
       if (error.code === 'ERR_NETWORK') {
         dispatch(setShowNotifyNetworkError());
@@ -77,14 +79,14 @@ const ModalDeleteChannel = () => {
       notifyError(t('errors.notifyNetworkError'));
       dispatch(setShowNotifyNetworkError());
     }
-  }, [isShowNotifyNetworkError]);
+  }, [isShowNotifyNetworkError, dispatch, t]);
 
   useEffect(() => {
     if (isShowNotifyServerError) {
       notifyError(t('errors.notifyServerError'));
       dispatch(setShowNotifyServerError());
     }
-  }, [isShowNotifyServerError]);
+  }, [isShowNotifyServerError, dispatch, t]);
 
   /*
   useEffect(() => {
@@ -98,26 +100,25 @@ const ModalDeleteChannel = () => {
   }, []);
   */
 
-  const channels = useSelector(getChannels);
   const activeChannelForDelete = useSelector(getActiveChannelForDelete);
 
   return (
-      <Modal show onHide={handleSetShowModalDeleteChannel} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{t('channels.channelDelete')}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p className="lead">{t('channels.areYouSure')}</p>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleSetShowModalDeleteChannel}>
-                {t('channels.cancelButton')}
-              </Button>
-              <Button variant="danger" type="submit" disabled="" onClick={() => handleSetDeleteChannel(token, activeChannelForDelete.id)}>
-                {t('channels.deleteButton')}
-              </Button>
-            </Modal.Footer>
-        </Modal.Body>
-      </Modal>
+    <Modal show onHide={handleSetShowModalDeleteChannel} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{t('channels.channelDelete')}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p className="lead">{t('channels.areYouSure')}</p>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleSetShowModalDeleteChannel}>
+            {t('channels.cancelButton')}
+          </Button>
+          <Button variant="danger" type="submit" disabled="" onClick={() => handleSetDeleteChannel(token, activeChannelForDelete.id)}>
+            {t('channels.deleteButton')}
+          </Button>
+        </Modal.Footer>
+      </Modal.Body>
+    </Modal>
   );
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import image404 from '../images/404-image.png';
 
-function Page404() {
+const Page404 = () => {
   const { t } = useTranslation();
   return (
     <div className="d-flex flex-column h-100">
@@ -25,6 +25,6 @@ function Page404() {
       </div>
     </div>
   );
-}
+};
 
 export default Page404;

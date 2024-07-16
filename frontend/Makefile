@@ -2,10 +2,13 @@ install:
 	npm install
 
 start:
-	npm run start
-
-build:
-	npm build
+	npx start-server -s ./build
 
 lint:
-	npx eslint --ext js,jsx --no-eslintrc --config .eslintrc.yml .
+	npx eslint .
+
+fix:
+	npx eslint --fix .
+
+build:
+	npm run build

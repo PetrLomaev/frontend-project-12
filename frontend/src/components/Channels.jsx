@@ -76,6 +76,7 @@ const Channels = () => {
                     title={`# ${channel.name}`}
                     onClick={() => handleSetActiveChannel(channel.id)}
                   >
+                    <span className="visually-hidden">{t('channels.control')}</span>
                     <Dropdown.Item eventKey="1" onClick={() => handleSetChannelDataForDelete(channel.id)}>{t('channels.deleteButton')}</Dropdown.Item>
                     <Dropdown.Item eventKey="2" onClick={() => handleSetChannelDataForRename(channel.id, channel.name)}>{t('channels.renameButton')}</Dropdown.Item>
                   </SplitButton>

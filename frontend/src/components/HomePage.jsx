@@ -50,10 +50,6 @@ const HomePage = () => {
   const isShowNotifyRenameChannel = useSelector(getShowNotifyRenameChannel);
   const isShowNotifyDeleteChannel = useSelector(getShowNotifyDeleteChannel);
 
-  const handleLogOut = () => {
-    dispatch(logOut());
-  };
-
   useEffect(() => {
     const getChannelsData = async (userToken) => {
       try {
@@ -154,13 +150,23 @@ const HomePage = () => {
     }
   }, [isShowNotifyDeleteChannel, dispatch, t]);
 
+  const handleLogOut = () => {
+    dispatch(logOut());
+  };
+
+  const handleLinkClick = (e) => {
+    if (isAuthorization) {
+      e.preventDefault();
+    }
+  };
+
   return (
     <div className="h-100">
       <div className="h-100" id="chat">
         <div className="d-flex flex-column h-100">
           <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
             <div className="container">
-              <a className="navbar-brand" href="/">
+              <a className="navbar-brand" href="/" onClick={handleLinkClick}>
                 {t('headerChat.header')}
               </a>
               <button type="button" className="btn btn-primary" onClick={handleLogOut}>

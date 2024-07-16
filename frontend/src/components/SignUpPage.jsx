@@ -125,6 +125,7 @@ const SignUpPage = () => {
                   <Form onSubmit={formInit.handleSubmit}>
                     <h1 className="text-center mb-4">{t('signUpPage.header')}</h1>
                     <Form.Group className="mb-3">
+                      <Form.Label>{t('signUpPage.yourNickname')}</Form.Label>
                       <Form.Control
                         name="username"
                         type="text"
@@ -141,6 +142,7 @@ const SignUpPage = () => {
                       </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-3">
+                      <Form.Label>{t('signUpPage.yourPassword')}</Form.Label>
                       <Form.Control
                         name="password"
                         type="password"
@@ -157,6 +159,7 @@ const SignUpPage = () => {
                       </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-3">
+                      <Form.Label>{t('signUpPage.confirmYourPassword')}</Form.Label>
                       <Form.Control
                         name="confirmPassword"
                         type="password"

@@ -12,6 +12,7 @@ import {
   setToken,
   logIn,
   logOut,
+  getIsAuthorization,
   setShowNotifyNetworkError,
   getShowNotifyNetworkError,
   setShowNotifyServerError,
@@ -42,6 +43,7 @@ const SignUpPage = () => {
       .oneOf([yup.ref('password'), null], t('errors.passwordsMustMatch')),
   });
 
+  const isAuthorization = useSelector(getIsAuthorization);
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
@@ -105,11 +107,18 @@ const SignUpPage = () => {
     validationSchema: schema,
     onSubmit: (values) => handleSubmit(values),
   });
+
+  const handleLinkClick = (e) => {
+    if (isAuthorization) {
+      e.preventDefault();
+    }
+  };
+
   return (
     <div className="d-flex flex-column h-100">
       <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
         <div className="container">
-          <a className="navbar-brand" href="/">{t('headerChat.header')}</a>
+          <a className="navbar-brand" href="/" onClick={handleLinkClick}>{t('headerChat.header')}</a>
         </div>
       </nav>
 

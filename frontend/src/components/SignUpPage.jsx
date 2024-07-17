@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, FloatingLabel } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
@@ -121,50 +121,67 @@ const SignUpPage = () => {
                 <div>
                   <img src={signUpImage} className="rounded-circle" alt={t('signUpPage.header')} />
                 </div>
-                <div className="col-12 col-md-6">
-                  <Form onSubmit={formInit.handleSubmit}>
-                    <h1 className="text-center mb-4">{t('signUpPage.header')}</h1>
-                    <Form.Group className="mb-3">
-                      <Form.Label>{t('signUpPage.yourNickname')}</Form.Label>
+
+                <Form className="w-50" onSubmit={formInit.handleSubmit}>
+                  <h1 className="text-center mb-4">{t('signUpPage.header')}</h1>
+                  <Form.Group className="form-floating mb-3">
+                    <FloatingLabel
+                      controlId="username"
+                      label={t('signUpPage.yourNickname')}
+                      className="mb-3"
+                    >
                       <Form.Control
                         name="username"
                         type="text"
-                        placeholder={t('signUpPage.yourNickname')}
+                        placeholder={t('errors.min3')}
                         autoComplete="username"
                         id="username"
+                        required
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
                         value={formInit.values.username}
                         isInvalid={formInit.touched.username && (!!formInit.errors.username)}
                       />
-                      <Form.Control.Feedback type="invalid">
+                      <Form.Control.Feedback type="invalid" tooltip>
                         {formInit.errors.username}
                       </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                      <Form.Label>{t('signUpPage.yourPassword')}</Form.Label>
+                    </FloatingLabel>
+                  </Form.Group>
+                  <Form.Group className="form-floating mb-3">
+                    <FloatingLabel
+                      controlId="password"
+                      label={t('signUpPage.yourPassword')}
+                      className="mb-3"
+                    >
                       <Form.Control
                         name="password"
                         type="password"
-                        placeholder={t('signUpPage.yourPassword')}
+                        placeholder={t('errors.min6')}
                         id="password"
+                        required
                         autoComplete="password"
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
                         value={formInit.values.password}
                         isInvalid={formInit.touched.password && (!!formInit.errors.password)}
                       />
-                      <Form.Control.Feedback type="invalid">
+                      <Form.Control.Feedback type="invalid" tooltip>
                         {formInit.errors.password}
                       </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                      <Form.Label>{t('signUpPage.confirmYourPassword')}</Form.Label>
+                    </FloatingLabel>
+                  </Form.Group>
+                  <Form.Group className="form-floating mb-4">
+                    <FloatingLabel
+                      controlId="password"
+                      label={t('signUpPage.confirmYourPassword')}
+                      className="mb-3"
+                    >
                       <Form.Control
                         name="confirmPassword"
                         type="password"
-                        placeholder={t('signUpPage.confirmYourPassword')}
+                        placeholder={t('errors.passwordsMustMatch')}
                         id="confirmPassword"
+                        required
                         autoComplete="confirmPassword"
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
@@ -172,18 +189,19 @@ const SignUpPage = () => {
                         isInvalid={formInit.touched.confirmPassword
                           && (!!formInit.errors.confirmPassword)}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        {formInit.errors.confirmPassword}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                    <Button type="submit">
-                      {t('signUpPage.register')}
-                    </Button>
-                    {nameError && (
+                    </FloatingLabel>
+                    <Form.Control.Feedback type="invalid" tooltip placement="right">
+                      {formInit.errors.confirmPassword}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Button type="submit">
+                    {t('signUpPage.register')}
+                  </Button>
+                  {nameError && (
                     <div className="invalid-feedback" style={{ display: 'block', color: 'red' }}>{t('errors.userAlreadyExists')}</div>
-                    )}
-                  </Form>
-                </div>
+                  )}
+                </Form>
+
               </div>
             </div>
           </div>

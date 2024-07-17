@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, FloatingLabel } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useSelector, useDispatch } from 'react-redux';
@@ -103,40 +103,53 @@ const LoginPage = () => {
                 <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
                   <img src={startImage} className="rounded-circle" alt={t('loginPage.header')} />
                 </div>
-                <div className="col-12 col-md-6">
-                  <Form onSubmit={formInit.handleSubmit}>
-                    <h1 className="text-center mb-4">{t('loginPage.header')}</h1>
-                    <Form.Group className="mb-3">
+                <Form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={formInit.handleSubmit}>
+                  <h1 className="text-center mb-4">{t('loginPage.header')}</h1>
+                  <Form.Group className="form-floating mb-3">
+                    <FloatingLabel
+                      controlId="username"
+                      label={t('loginPage.yourNickname')}
+                      className="mb-3"
+                    >
                       <Form.Control
                         type="text"
                         placeholder={t('loginPage.yourNickname')}
                         autoComplete="username"
                         id="username"
+                        required
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
                         value={formInit.values.username}
+                        isInvalid={formInit.touched.username && (!!formInit.errors.username)}
                       />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
+                    </FloatingLabel>
+                  </Form.Group>
+                  <Form.Group className="form-floating mb-4">
+                    <FloatingLabel
+                      controlId="password"
+                      label={t('loginPage.yourPassword')}
+                      className="mb-3"
+                    >
                       <Form.Control
                         type="password"
                         placeholder={(t('loginPage.yourPassword'))}
-                        id="password"
                         autoComplete="password"
+                        id="password"
+                        required
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
                         value={formInit.values.password}
+                        isInvalid={formInit.touched.password && (!!formInit.errors.password)}
                       />
-                      {showError && (
-                      <div className="invalid-feedback" style={{ display: 'block', color: 'red' }}>{t('errors.incorrectNameOrPassword')}</div>
-                      )}
-                    </Form.Group>
-
-                    <Button type="submit">
-                      Войти
-                    </Button>
-                  </Form>
-                </div>
+                    </FloatingLabel>
+                  </Form.Group>
+                  <Button type="submit">
+                    Войти
+                  </Button>
+                  {showError && (
+                  <div className="invalid-feedback" style={{ display: 'block', color: 'red' }}>{t('errors.incorrectNameOrPassword')}</div>
+                  )}
+                </Form>
               </div>
               <div className="card-footer p-4">
                 <div className="text-center">

@@ -157,10 +157,13 @@ const HomePage = () => {
   const handleLinkClick = (e) => {
     if (isAuthorization) {
       e.preventDefault();
+    } else {
+      navigate('/');
     }
   };
 
-  return (
+  return (isAuthorization
+    && (
     <div className="h-100">
       <div className="h-100" id="chat">
         <div className="d-flex flex-column h-100">
@@ -191,6 +194,7 @@ const HomePage = () => {
 
       </div>
     </div>
+    )
   );
 };
 

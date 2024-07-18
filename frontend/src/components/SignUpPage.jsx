@@ -108,11 +108,23 @@ const SignUpPage = () => {
     onSubmit: (values) => handleSubmit(values),
   });
 
+  const handleLogOut = () => {
+    dispatch(logOut());
+  };
+
   return (
     <div className="d-flex flex-column h-100">
       <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
         <div className="container">
-          <a className="navbar-brand" href="/">{t('headerChat.header')}</a>
+          <a className="navbar-brand" href="/">
+            {t('headerChat.header')}
+          </a>
+          {isAuthorization && (
+          <button type="button" className="btn btn-primary" onClick={handleLogOut}>
+            {t('homePage.exitButton')}
+          </button>
+          )}
+
         </div>
       </nav>
 

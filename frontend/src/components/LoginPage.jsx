@@ -11,6 +11,8 @@ import startImage from '../images/start-image.jpeg';
 import {
   setToken,
   logIn,
+  logOut,
+  getIsAuthorization,
   setShowNotifyNetworkError,
   getShowNotifyNetworkError,
   setShowNotifyServerError,
@@ -20,7 +22,6 @@ import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
 const handleSubmit = async (formValue, setShowError, navigate, dispatch) => {
-  // Попытка отправить форму
   try {
     const response = await axios.post(routes.loginPath(), {
       username: formValue.username,
@@ -57,6 +58,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const isAuthorization = useSelector(getIsAuthorization);
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
@@ -87,11 +89,23 @@ const LoginPage = () => {
     validationSchema: schema,
     onSubmit: (values) => handleSubmit(values, setShowError, navigate, dispatch),
   });
+
+  const handleLogOut = () => {
+    dispatch(logOut());
+  };
+
   return (
     <div className="d-flex flex-column h-100">
       <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
         <div className="container">
-          <a className="navbar-brand" href="/">{t('headerChat.header')}</a>
+          <a className="navbar-brand" href="/">
+            {t('headerChat.header')}
+          </a>
+          {isAuthorization && (
+          <button type="button" className="btn btn-primary" onClick={handleLogOut}>
+            {t('homePage.exitButton')}
+          </button>
+          )}
         </div>
       </nav>
 

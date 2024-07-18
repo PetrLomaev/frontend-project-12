@@ -108,17 +108,11 @@ const SignUpPage = () => {
     onSubmit: (values) => handleSubmit(values),
   });
 
-  const handleLinkClick = (e) => {
-    if (isAuthorization) {
-      e.preventDefault();
-    }
-  };
-
   return (
     <div className="d-flex flex-column h-100">
       <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
         <div className="container">
-          <a className="navbar-brand" href="/" onClick={handleLinkClick}>{t('headerChat.header')}</a>
+          <a className="navbar-brand" href="/">{t('headerChat.header')}</a>
         </div>
       </nav>
 

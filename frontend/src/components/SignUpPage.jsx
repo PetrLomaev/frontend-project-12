@@ -187,7 +187,7 @@ const SignUpPage = () => {
                   </Form.Group>
                   <Form.Group className="form-floating mb-4">
                     <FloatingLabel
-                      controlId="password"
+                      controlId="confirmPassword"
                       label={t('signUpPage.confirmYourPassword')}
                       className="mb-3"
                     >

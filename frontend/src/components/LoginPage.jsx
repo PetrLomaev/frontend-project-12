@@ -157,7 +157,7 @@ const LoginPage = () => {
                       />
                     </FloatingLabel>
                   </Form.Group>
-                  <Button type="submit">
+                  <Button type="submit" className="w-100 mb-3 btn">
                     Войти
                   </Button>
                   {showError && (

@@ -75,6 +75,7 @@ const Channels = () => {
                     variant={Number(channel.id) === Number(activeChannelId) ? 'secondary' : ''}
                     title={`# ${channel.name}`}
                     onClick={() => handleSetActiveChannel(channel.id)}
+                    className="w-100 flex-grow-0"
                   >
                     <span className="visually-hidden">{t('channels.control')}</span>
                     <Dropdown.Item eventKey="1" onClick={() => handleSetChannelDataForDelete(channel.id)}>{t('channels.deleteButton')}</Dropdown.Item>
@@ -85,6 +86,7 @@ const Channels = () => {
                   <Button
                     variant={Number(channel.id) === Number(activeChannelId) ? 'secondary' : ''}
                     onClick={() => handleSetActiveChannel(channel.id)}
+                    className="w-100"
                   >
                     <span className="me-1">#</span>
                     {channel.name}

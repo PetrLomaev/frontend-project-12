@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
@@ -32,6 +32,8 @@ const ModalAddChannel = () => {
   const token = useSelector(getToken);
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
+
+  const inputRef = useRef(null);
 
   const handleSetShowModalAddChannel = () => {
     dispatch(setShowModalAddChannel());
@@ -75,6 +77,14 @@ const ModalAddChannel = () => {
   }, []);
   */
   const channels = useSelector(getChannels);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 100);
+  }, []);
 
   useEffect(() => {
     if (isShowNotifyNetworkError) {
@@ -128,6 +138,7 @@ const ModalAddChannel = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.newChannelName}
+                innerRef={inputRef}
               />
               <ErrorMessage
                 component="div"

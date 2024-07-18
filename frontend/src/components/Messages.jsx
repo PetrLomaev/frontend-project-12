@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Formik, Field, Form } from 'formik';
@@ -56,6 +56,9 @@ const Messages = () => {
   const messages = useSelector(getMessages);
   const countOfMessages = useSelector((state) => getCountOfMessages(state, activeChannelId));
 
+  const inputRef = useRef(null);
+  console.log('inputRef>>>', inputRef);
+
   const textMessageToNewMessage = (textValue, channelId, username) => {
     const filteredTextValue = censorFunc(textValue);
     return {
@@ -74,6 +77,12 @@ const Messages = () => {
       socket.off('newMessage');
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   useEffect(() => {
     if (isShowNotifyNetworkError) {
@@ -106,8 +115,7 @@ const Messages = () => {
           .map((message) => (
             <div key={message.id} className="text-break mb-2">
               <b>{message.username}</b>
-              :
-              {message.body}
+              {`: ${message.body}`}
             </div>
           ))}
       </div>
@@ -135,6 +143,7 @@ const Messages = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.message}
+                  innerRef={inputRef}
                 />
                 <Button type="submit" disabled="" className="btn btn-group-vertical">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">

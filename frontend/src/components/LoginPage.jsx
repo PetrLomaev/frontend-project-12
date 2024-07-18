@@ -21,42 +21,42 @@ import {
 import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
-const handleSubmit = async (formValue, setShowError, navigate, dispatch) => {
-  try {
-    const response = await axios.post(routes.loginPath(), {
-      username: formValue.username,
-      password: formValue.password,
-    });
-    const { token } = response.data;
-    dispatch(setToken(token));
-    dispatch(logIn(response.data.username));
-    localStorage.setItem('token', token);
-    const tokenValueInStorage = localStorage.getItem('token');
-
-    if (tokenValueInStorage && tokenValueInStorage.length > 0) {
-      setShowError(false);
-      navigate('/');
-    } else {
-      setShowError(true);
-      navigate('/login');
-    }
-  } catch (error) {
-    console.log(error);
-    if (error.code === 'ERR_NETWORK') {
-      dispatch(setShowNotifyNetworkError());
-    }
-    if (error.response.status >= 500) {
-      dispatch(setShowNotifyServerError());
-    }
-    setShowError(true);
-  }
-};
-
 const LoginPage = () => {
   const { t } = useTranslation();
   const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const handleSubmit = async (formValue) => {
+    try {
+      const response = await axios.post(routes.loginPath(), {
+        username: formValue.username,
+        password: formValue.password,
+      });
+      const { token } = response.data;
+      dispatch(setToken(token));
+      dispatch(logIn(response.data.username));
+      localStorage.setItem('token', token);
+      const tokenValueInStorage = localStorage.getItem('token');
+
+      if (tokenValueInStorage && tokenValueInStorage.length > 0) {
+        setShowError(false);
+        navigate('/');
+      } else {
+        setShowError(true);
+        navigate('/login');
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.code === 'ERR_NETWORK') {
+        dispatch(setShowNotifyNetworkError());
+      }
+      if (error.response.status >= 500) {
+        dispatch(setShowNotifyServerError());
+      }
+      setShowError(true);
+    }
+  };
 
   const isAuthorization = useSelector(getIsAuthorization);
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
@@ -129,7 +129,6 @@ const LoginPage = () => {
                         type="text"
                         placeholder={t('loginPage.yourNickname')}
                         autoComplete="username"
-                        id="username"
                         required
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
@@ -148,7 +147,6 @@ const LoginPage = () => {
                         type="password"
                         placeholder={(t('loginPage.yourPassword'))}
                         autoComplete="password"
-                        id="password"
                         required
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}

@@ -150,7 +150,6 @@ const SignUpPage = () => {
                         type="text"
                         placeholder={t('errors.min3')}
                         autoComplete="username"
-                        id="username"
                         required
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
@@ -172,7 +171,6 @@ const SignUpPage = () => {
                         name="password"
                         type="password"
                         placeholder={t('errors.min6')}
-                        id="password"
                         required
                         autoComplete="password"
                         onChange={formInit.handleChange}
@@ -195,7 +193,6 @@ const SignUpPage = () => {
                         name="confirmPassword"
                         type="password"
                         placeholder={t('errors.passwordsMustMatch')}
-                        id="confirmPassword"
                         required
                         autoComplete="confirmPassword"
                         onChange={formInit.handleChange}

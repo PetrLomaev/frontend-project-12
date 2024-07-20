@@ -10,7 +10,7 @@ import SignUpPage from './components/SignUpPage';
 import Page404 from './components/Page404';
 import store from './slices/configureStore';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './i18next';
+import './utils/i18next';
 import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => (

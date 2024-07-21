@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint no-param-reassign: "error" */
+
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -17,30 +18,38 @@ const authorizationSlice = createSlice({
       state.user = action.payload;
       state.isAuthorization = true;
     },
-    logOut(state){
+    logOut(state) {
       state.user = null;
       state.isAuthorization = false;
       state.token = null;
     },
-    setToken(state, action){
+    setToken(state, action) {
       state.token = action.payload;
     },
-    setUser(state, action){
+    setUser(state, action) {
       state.user = action.payload;
     },
-    setAuthorization(state){
+    setAuthorization(state) {
       state.isAuthorization = true;
     },
-    setShowNotifyNetworkError(state){
+    setShowNotifyNetworkError(state) {
       state.showNotifyNetworkError = !state.showNotifyNetworkError;
     },
-    setShowNotifyServerError(state){
+    setShowNotifyServerError(state) {
       state.showNotifyServerError = !state.showNotifyServerError;
     },
   },
 });
 
-export const { logIn, logOut, setToken, setUser, setAuthorization, setShowNotifyNetworkError, setShowNotifyServerError } = authorizationSlice.actions;
+export const {
+  logIn,
+  logOut,
+  setToken,
+  setUser,
+  setAuthorization,
+  setShowNotifyNetworkError,
+  setShowNotifyServerError,
+} = authorizationSlice.actions;
 export const getUser = (state) => state.authorization.user;
 export const getIsAuthorization = (state) => state.authorization.isAuthorization;
 export const getToken = (state) => state.authorization.token;

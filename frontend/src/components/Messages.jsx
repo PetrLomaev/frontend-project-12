@@ -5,7 +5,11 @@ import { Formik, Field, Form } from 'formik';
 import { Button } from 'react-bootstrap';
 import { io } from 'socket.io-client';
 import axios from 'axios';
-import { getMessages, getCountOfMessages, addMessage } from '../slices/messagesSlice';
+import {
+  getMessages,
+  getCountOfMessages,
+  addMessage,
+} from '../slices/messagesSlice';
 import {
   getUser,
   getToken,
@@ -59,6 +63,12 @@ const Messages = () => {
   const inputRef = useRef(null);
   console.log('inputRef.current>>>', inputRef.current);
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   const textMessageToNewMessage = (textValue, channelId, username) => {
     const filteredTextValue = censorFunc(textValue);
     return {
@@ -77,14 +87,6 @@ const Messages = () => {
       socket.off('newMessage');
     };
   }, [dispatch]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, 100);
-  }, []);
 
   useEffect(() => {
     if (isShowNotifyNetworkError) {
@@ -124,8 +126,6 @@ const Messages = () => {
       <div className="mt-auto px-5 py-3">
         <Formik
           initialValues={{ message: '' }}
-          validateOnBlur={false}
-          validateOnChange={false}
           onSubmit={(values, { resetForm }) => {
             const newMessage = textMessageToNewMessage(values.message, activeChannelId, user);
             handleSubmitMessage(newMessage, token);
@@ -139,13 +139,14 @@ const Messages = () => {
                   type="text"
                   name="message"
                   aria-label={t('messages.newMessage')}
-                  autoComplete="off"
                   placeholder={t('messages.inputMesage')}
+                  autoComplete="off"
                   className="border-0 p-0 ps-2 form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.message}
                   innerRef={inputRef}
+                  // autoFocus
                 />
                 <Button type="submit" disabled={values.message === ''} className="btn btn-group-vertical">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">

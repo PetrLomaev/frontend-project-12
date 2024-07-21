@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint no-param-reassign: "error" */
+
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -26,19 +27,19 @@ const channelsSlice = createSlice({
     setChannels(state, action) {
       state.channels = action.payload;
     },
-    setActiveChannel(state, action){
+    setActiveChannel(state, action) {
       state.activeChannelId = action.payload;
     },
-    addChannel(state, action){
+    addChannel(state, action) {
       state.channels = [...state.channels, action.payload];
     },
-    setShowModalAddChannel(state){
+    setShowModalAddChannel(state) {
       state.showModalAddChannel = !state.showModalAddChannel;
     },
-    setShowModalRenameChannel(state){
+    setShowModalRenameChannel(state) {
       state.showModalRenameChannel = !state.showModalRenameChannel;
     },
-    setShowModalDeleteChannel(state){
+    setShowModalDeleteChannel(state) {
       state.showModalDeleteChannel = !state.showModalDeleteChannel;
     },
     setNewChannelName(state, action) { // Обновить имя конкретного канала по указанному id и newName
@@ -49,27 +50,27 @@ const channelsSlice = createSlice({
         }
       });
     },
-    setChannelDataForRename(state, action){
+    setChannelDataForRename(state, action) {
       const { channelId, channelName } = action.payload;
       state.activeChannelForRename.id = channelId;
       state.activeChannelForRename.name = channelName;
     },
-    setDeleteChannel(state, action){
+    setDeleteChannel(state, action) {
       const { id } = action.payload;
       const updatedChannels = state.channels.filter((channel) => channel.id !== id);
       state.channels = updatedChannels;
     },
-    setChannelDataForDelete(state, action){
+    setChannelDataForDelete(state, action) {
       const { channelId } = action.payload;
       state.activeChannelForDelete.id = channelId;
     },
-    setShowNotifyAddChannel(state){
+    setShowNotifyAddChannel(state) {
       state.showNotifyAddChannel = !state.showNotifyAddChannel;
     },
-    setShowNotifyRenameChannel(state){
+    setShowNotifyRenameChannel(state) {
       state.showNotifyRenameChannel = !state.showNotifyRenameChannel;
     },
-    setShowNotifyDeleteChannel(state){
+    setShowNotifyDeleteChannel(state) {
       state.showNotifyDeleteChannel = !state.showNotifyDeleteChannel;
     },
   },

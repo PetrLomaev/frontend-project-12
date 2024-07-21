@@ -154,6 +154,7 @@ const SignUpPage = () => {
                         onChange={formInit.handleChange}
                         onBlur={formInit.handleBlur}
                         value={formInit.values.username}
+                        autoFocus
                         isInvalid={formInit.touched.username && (!!formInit.errors.username)}
                       />
                       <Form.Control.Feedback type="invalid" tooltip>

@@ -1,10 +1,9 @@
-/* eslint-disable */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import { Provider, ErrorBoundary } from '@rollbar/react';
 import Rollbar from 'rollbar';
+import App from './App';
 
 const rollbarInit = {
   accessToken: '206a4d562e91496ea0a8654923663f9c',

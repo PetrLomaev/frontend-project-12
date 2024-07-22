@@ -140,7 +140,7 @@ const Messages = () => {
         >
           {({ handleChange, handleBlur, values }) => (
             <Form noValidate className="py-1 border rounded-2">
-              <div className="input-group has-validation">
+              <div className={values.message === '' ? 'input-group has-validation' : 'input-group'}>
                 <Field
                   type="text"
                   name="message"

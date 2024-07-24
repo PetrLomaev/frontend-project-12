@@ -5,7 +5,6 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   messages: [],
   amountOfMessages: 0,
-  inTheProcessSending: false,
 };
 
 const messagesSlice = createSlice({
@@ -24,9 +23,6 @@ const messagesSlice = createSlice({
       const updatedMessages = state.messages.filter((message) => message.channelId !== id);
       state.messages = updatedMessages;
     },
-    setInTheProcessSending(state) {
-      state.inTheProcessSending = !state.inTheProcessSending;
-    },
   },
 });
 
@@ -39,5 +35,4 @@ export const getCountOfMessages = (state, activeChannelId) => {
     .filter((message) => message.channelId === activeChannelId);
   return messagesOfActiveChannel.length;
 };
-export const getInTheProcessSending = (state) => state.messages.inTheProcessSending;
 export default messagesSlice.reducer;

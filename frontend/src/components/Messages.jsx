@@ -31,7 +31,7 @@ const Messages = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const handleSubmitMessage = async (newMessage, userToken) => {
+  const handleSubmitMessage = async (newMessage, userToken, { setSubmitting }) => {
     try {
       await axios.post(routes.messagesPath(), newMessage, {
         headers: {
@@ -46,6 +46,8 @@ const Messages = () => {
         dispatch(setShowNotifyServerError());
       }
       console.log(error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -125,9 +127,9 @@ const Messages = () => {
       <div className="mt-auto px-5 py-3">
         <Formik
           initialValues={{ message: '' }}
-          onSubmit={(values, { resetForm }) => {
+          onSubmit={(values, { setSubmitting, resetForm }) => {
             const newMessage = textMessageToNewMessage(values.message, activeChannelId, user);
-            handleSubmitMessage(newMessage, token);
+            handleSubmitMessage(newMessage, token, { setSubmitting });
             resetForm();
           }}
         >

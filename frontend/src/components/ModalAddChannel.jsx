@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
+import { useFormik } from 'formik';
 import {
-  Formik, Field, Form, ErrorMessage,
-} from 'formik';
+  Button, Form, Modal,
+} from 'react-bootstrap';
 import axios from 'axios';
 import * as yup from 'yup';
 import {
@@ -113,49 +113,46 @@ const ModalAddChannel = () => {
       .test('is-unique', t('errors.isUnique'), (value) => isUniqueChannelName(value)),
   });
 
+  const formInit = useFormik({
+    initialValues: {
+      newChannelName: '',
+    },
+    validationSchema: schema,
+    onSubmit: (values) => handleAddChannel(values.newChannelName, token),
+  });
+
   return (
     <Modal show onHide={handleSetShowModalAddChannel} centered>
       <Modal.Header closeButton>
-        <Modal.Title>{t('channels.addButton')}</Modal.Title>
+        <Modal.Title>{t('channels.addHeader')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Formik
-          initialValues={{ newChannelName: '' }}
-          validationSchema={schema}
-          onSubmit={(values) => {
-            handleAddChannel(values.newChannelName, token);
-          }}
-        >
-          {({ handleChange, handleBlur, values }) => (
-            <Form noValidate className="mb-2">
-              <Field
-                type="text"
-                name="newChannelName"
-                aria-label={t('channels.channelName')}
-                autoComplete="off"
-                placeholder=""
-                className="form-control"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.newChannelName}
-                innerRef={inputRef}
-              />
-              <ErrorMessage
-                component="div"
-                name="newChannelName"
-                className="text-danger"
-              />
-              <Modal.Footer>
-                <Button variant="secondary" onClick={handleSetShowModalAddChannel}>
-                  {t('channels.cancelButton')}
-                </Button>
-                <Button variant="primary" type="submit">
-                  {t('channels.sendButton')}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
+        <Form onSubmit={formInit.handleSubmit}>
+          <Form.Group controlId="newChannelName">
+            <Form.Label visuallyHidden>{t('channels.channelName')}</Form.Label>
+            <Form.Control
+              name="newChannelName"
+              className="mb-2"
+              onChange={formInit.handleChange}
+              onBlur={formInit.handleBlur}
+              value={formInit.values.newChannelName}
+              innerRef={inputRef}
+              isInvalid={formInit.touched.newChannelName && (!!formInit.errors.newChannelName)}
+            />
+
+            <Form.Control.Feedback type="invalid">
+              {formInit.errors.newChannelName}
+            </Form.Control.Feedback>
+          </Form.Group>
+          <div className="d-flex justify-content-end">
+            <Button variant="secondary" className="me-2" onClick={handleSetShowModalAddChannel}>
+              {t('channels.cancelButton')}
+            </Button>
+            <Button variant="primary" type="submit">
+              {t('channels.sendButton')}
+            </Button>
+          </div>
+        </Form>
       </Modal.Body>
     </Modal>
   );

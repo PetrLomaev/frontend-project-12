@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { useFormik } from 'formik';
+import {
+  Button, Form, Modal,
+} from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import {
-  Formik, Field, Form, ErrorMessage,
-} from 'formik';
 import axios from 'axios';
 import * as yup from 'yup';
 import {
@@ -119,49 +119,48 @@ const ModalRenameChannel = () => {
       .test('is-unique', t('errors.isUnique'), (value) => isUniqueChannelName(value)),
   });
 
+  const formInit = useFormik({
+    initialValues: {
+      renameChannelName: activeChannelForRename.name,
+    },
+    validationSchema: schema,
+    onSubmit: (values) => {
+      handleSetNewChannelName(values.renameChannelName, token, activeChannelForRename.id);
+    },
+  });
+
   return (
     <Modal show onHide={handleSetShowModalRenameChannel} centered>
       <Modal.Header closeButton>
         <Modal.Title>{t('channels.channelRename')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Formik
-          initialValues={{ renameChannelName: activeChannelForRename.name }}
-          validationSchema={schema}
-          onSubmit={(values) => {
-            handleSetNewChannelName(values.renameChannelName, token, activeChannelForRename.id);
-          }}
-        >
-          {({ handleChange, handleBlur, values }) => (
-            <Form noValidate className="mb-2">
-              <Field
-                type="text"
-                name="renameChannelName"
-                aria-label={t('channels.channelNewName')}
-                autoComplete="off"
-                placeholder=""
-                className="form-control"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.renameChannelName}
-                innerRef={inputRef}
-              />
-              <ErrorMessage
-                component="div"
-                name="renameChannelName"
-                className="text-danger"
-              />
-              <Modal.Footer>
-                <Button variant="secondary" onClick={handleSetShowModalRenameChannel}>
-                  {t('channels.cancelButton')}
-                </Button>
-                <Button variant="primary" type="submit" disabled="">
-                  {t('channels.sendButton')}
-                </Button>
-              </Modal.Footer>
-            </Form>
-          )}
-        </Formik>
+        <Form onSubmit={formInit.handleSubmit}>
+          <Form.Group controlId="renameChannelName">
+            <Form.Label visuallyHidden>{t('channels.channelName')}</Form.Label>
+            <Form.Control
+              name="renameChannelName"
+              className="mb-2"
+              onChange={formInit.handleChange}
+              onBlur={formInit.handleBlur}
+              value={formInit.values.renameChannelName}
+              innerRef={inputRef}
+              isInvalid={formInit.touched.renameChannelName
+                && (!!formInit.errors.renameChannelName)}
+            />
+            <Form.Control.Feedback type="invalid">
+              {formInit.errors.renameChannelName}
+            </Form.Control.Feedback>
+          </Form.Group>
+          <div className="d-flex justify-content-end">
+            <Button variant="secondary" className="me-2" onClick={handleSetShowModalRenameChannel}>
+              {t('channels.cancelButton')}
+            </Button>
+            <Button variant="primary" type="submit">
+              {t('channels.sendButton')}
+            </Button>
+          </div>
+        </Form>
       </Modal.Body>
     </Modal>
   );

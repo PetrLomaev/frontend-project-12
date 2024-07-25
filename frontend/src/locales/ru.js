@@ -25,7 +25,7 @@ export default {
       channelDelete: 'Удалить канал',
       deleteButton: 'Удалить',
       renameButton: 'Переименовать',
-      addButton: 'Добавить',
+      addHeader: 'Добавить канал',
       addButtonSymbol: '+',
       cancelButton: 'Отменить',
       sendButton: 'Отправить',

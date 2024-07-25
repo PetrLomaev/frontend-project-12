@@ -109,14 +109,14 @@ const ModalDeleteChannel = () => {
       </Modal.Header>
       <Modal.Body>
         <p className="lead">{t('channels.areYouSure')}</p>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleSetShowModalDeleteChannel}>
+        <div className="d-flex justify-content-end">
+          <Button variant="secondary" className="me-2" onClick={handleSetShowModalDeleteChannel}>
             {t('channels.cancelButton')}
           </Button>
           <Button variant="danger" type="submit" disabled="" onClick={() => handleSetDeleteChannel(token, activeChannelForDelete.id)}>
             {t('channels.deleteButton')}
           </Button>
-        </Modal.Footer>
+        </div>
       </Modal.Body>
     </Modal>
   );

@@ -33,7 +33,7 @@ export default {
       areYouSure: 'Вы уверены?',
       notifyAdd: 'Канал создан',
       notifyRename: 'Канал переименован',
-      notifyDelete: 'Канал удален',
+      notifyDelete: 'Канал удалён',
     },
     messages: {
       counter: {

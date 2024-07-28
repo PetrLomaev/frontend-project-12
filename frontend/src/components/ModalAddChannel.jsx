@@ -7,6 +7,7 @@ import {
 } from 'react-bootstrap';
 import axios from 'axios';
 import * as yup from 'yup';
+import { io } from 'socket.io-client';
 import {
   getChannels, setActiveChannel, setShowModalAddChannel, addChannel, setShowNotifyAddChannel,
 } from '../slices/channelsSlice';
@@ -18,12 +19,11 @@ import {
   setShowNotifyServerError,
   getShowNotifyServerError,
 } from '../slices/authorizationSlice';
-// import { io } from 'socket.io-client';
 import censorFunc from '../utils/censor';
 import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
-// const socket = io('http://localhost:3000');
+const socket = io();
 
 const ModalAddChannel = () => {
   const dispatch = useDispatch();
@@ -50,7 +50,7 @@ const ModalAddChannel = () => {
       });
       if (response.data) {
         console.log('New channel data>>>', response.data);
-        dispatch(addChannel(response.data));
+        // dispatch(addChannel(response.data));
         dispatch(setActiveChannel(response.data.id));
         dispatch(setShowNotifyAddChannel());
         handleSetShowModalAddChannel();
@@ -65,7 +65,7 @@ const ModalAddChannel = () => {
       }
     }
   };
-  /*
+
   useEffect(() => {
     socket.on('newChannel', (currentNewChannel) => {
       console.log('Current newChannel>>>', currentNewChannel);
@@ -75,7 +75,7 @@ const ModalAddChannel = () => {
       socket.off('newChannel');
     };
   }, []);
-  */
+
   const channels = useSelector(getChannels);
 
   useEffect(() => {

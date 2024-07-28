@@ -63,7 +63,6 @@ const Messages = () => {
   const countOfMessages = useSelector((state) => getCountOfMessages(state, activeChannelId));
 
   const inputRef = useRef(null);
-  console.log('inputRef.current>>>', inputRef.current);
 
   useEffect(() => {
     if (inputRef.current) {

@@ -3,6 +3,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 import {
   setActiveChannel,
   getActiveChannelForDelete,
@@ -21,25 +22,21 @@ import {
 } from '../slices/authorizationSlice';
 import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
-// import { io } from 'socket.io-client';
 
-// const socket = io('http://localhost:3000');
+const socket = io();
 
 const ModalDeleteChannel = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  // Вытащить значения из authorizationSlice
   const token = useSelector(getToken);
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
-  // При закрытии окна - изменяем в стейте showModalDeleteChannel на true или false
   const handleSetShowModalDeleteChannel = () => {
     dispatch(setShowModalDeleteChannel());
   };
 
-  // Функция для удаления канала по имени и последующего обновления в state
   const handleSetDeleteChannel = async (userToken, deletedChannelId) => {
     const pathToDeleteChannel = [routes.channelsPath(), deletedChannelId].join('/');
     // const pathToDeleteMessage = [routes.messagesPath(), deletedChannelId].join('/');
@@ -50,7 +47,7 @@ const ModalDeleteChannel = () => {
         },
       });
       if (response.data) {
-        dispatch(setDeleteChannel({ id: response.data.id }));
+        // dispatch(setDeleteChannel({ id: response.data.id }));
         /* Нужно ли это?
         await axios.delete(pathToDeleteMessage, {
           headers: {
@@ -60,7 +57,7 @@ const ModalDeleteChannel = () => {
         */
         dispatch(deleteMessagesDuringDeleteChannel({ id: response.data.id }));
         handleSetShowModalDeleteChannel();
-        dispatch(setActiveChannel(1)); // После удаления сделать активным дефолтный канал
+        dispatch(setActiveChannel(1));
         dispatch(setShowNotifyDeleteChannel());
       }
     } catch (error) {
@@ -88,17 +85,15 @@ const ModalDeleteChannel = () => {
     }
   }, [isShowNotifyServerError, dispatch, t]);
 
-  /*
   useEffect(() => {
-    socket.on('newChannel', (currentNewChannel) => {
-      console.log('Current newChannel>>>', currentNewChannel);
-      dispatch(addChannel(currentNewChannel));
+    socket.on('removeChannel', (currentRemoveChannel) => {
+      console.log('currentRemoveChannel>>>', currentRemoveChannel);
+      dispatch(setDeleteChannel(currentRemoveChannel));
     });
     return () => {
-      socket.off('newChannel');
+      socket.off('removeChannel');
     };
   }, []);
-  */
 
   const activeChannelForDelete = useSelector(getActiveChannelForDelete);
 

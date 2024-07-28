@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import * as yup from 'yup';
+import { io } from 'socket.io-client';
 import {
   getChannels,
   setShowModalRenameChannel,
@@ -22,12 +23,11 @@ import {
   setShowNotifyServerError,
   getShowNotifyServerError,
 } from '../slices/authorizationSlice';
-// import { io } from 'socket.io-client';
 import censorFunc from '../utils/censor';
 import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
-// const socket = io('http://localhost:3000');
+const socket = io('http://localhost:3000');
 
 const ModalRenameChannel = () => {
   const dispatch = useDispatch();
@@ -43,8 +43,8 @@ const ModalRenameChannel = () => {
     dispatch(setShowModalRenameChannel());
   };
 
-  const handleSetNewChannelName = async (newName, userToken, changingChannelId) => {
-    const filteredName = censorFunc(newName);
+  const handleSetNewChannelName = async (name, userToken, changingChannelId) => {
+    const filteredName = censorFunc(name);
     const newEdditedChannelName = { name: filteredName };
     const pathToRenameChannel = [routes.channelsPath(), changingChannelId].join('/');
     try {
@@ -54,7 +54,7 @@ const ModalRenameChannel = () => {
         },
       });
       if (response.data) {
-        dispatch(setNewChannelName({ id: response.data.id, newName: response.data.name }));
+        // dispatch(setNewChannelName({ id: response.data.id, name: response.data.name }));
         handleSetShowModalRenameChannel();
         dispatch(setShowNotifyRenameChannel());
       }
@@ -68,17 +68,16 @@ const ModalRenameChannel = () => {
       }
     }
   };
-  /*
+
   useEffect(() => {
-    socket.on('newChannel', (currentNewChannel) => {
-      console.log('Current newChannel>>>', currentNewChannel);
-      dispatch(addChannel(currentNewChannel));
+    socket.on('renameChannel', (currentRenameChannel) => {
+      console.log('currentRenameChannel>>>', currentRenameChannel);
+      dispatch(setNewChannelName(currentRenameChannel));
     });
     return () => {
-      socket.off('newChannel');
+      socket.off('renameChannel');
     };
   }, []);
-  */
 
   useEffect(() => {
     setTimeout(() => {

@@ -25,7 +25,7 @@ import notifyError from '../utils/notifyError';
 import '../App.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-const socket = io();
+const socket = io('http://localhost:3000');
 
 const Messages = () => {
   const dispatch = useDispatch();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Dropdown, Button, SplitButton } from 'react-bootstrap';
+import { Dropdown, Button, ButtonGroup } from 'react-bootstrap';
 import {
   getChannels,
   getActiveChannelId,
@@ -71,22 +71,32 @@ const Channels = () => {
             <li key={channel.id} className="nav-item w-100">
               {channel.removable
                 ? (
-                  <SplitButton
-                    variant={Number(channel.id) === Number(activeChannelId) ? 'secondary' : ''}
-                    title={`# ${channel.name}`}
-                    onClick={() => handleSetActiveChannel(channel.id)}
-                    className="w-100 flex-grow-0"
-                    toggleLabel={t('channels.control')}
-                  >
-                    <Dropdown.Item eventKey="1" onClick={() => handleSetChannelDataForDelete(channel.id)}>{t('channels.deleteButton')}</Dropdown.Item>
-                    <Dropdown.Item eventKey="2" onClick={() => handleSetChannelDataForRename(channel.id, channel.name)}>{t('channels.renameButton')}</Dropdown.Item>
-                  </SplitButton>
+                  <Dropdown as={ButtonGroup} className="d-flex">
+                    <Button
+                      variant={Number(channel.id) === Number(activeChannelId) ? 'secondary' : ''}
+                      onClick={() => handleSetActiveChannel(channel.id)}
+                      className="w-100 rounded-0 text-start text-truncate"
+                    >
+                      <span className="me-1">#</span>
+                      {channel.name}
+                    </Button>
+                    <Dropdown.Toggle
+                      split
+                      variant={Number(channel.id) === Number(activeChannelId) ? 'secondary' : ''}
+                    >
+                      <span className="visually-hidden">{t('channels.control')}</span>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item eventKey="1" onClick={() => handleSetChannelDataForDelete(channel.id)}>{t('channels.deleteButton')}</Dropdown.Item>
+                      <Dropdown.Item eventKey="2" onClick={() => handleSetChannelDataForRename(channel.id, channel.name)}>{t('channels.renameButton')}</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 )
                 : (
                   <Button
                     variant={Number(channel.id) === Number(activeChannelId) ? 'secondary' : ''}
                     onClick={() => handleSetActiveChannel(channel.id)}
-                    className="w-100"
+                    className="w-100 rounded-0 text-start btn"
                   >
                     <span className="me-1">#</span>
                     {channel.name}

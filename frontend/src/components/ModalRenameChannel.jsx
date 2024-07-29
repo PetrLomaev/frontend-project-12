@@ -43,8 +43,8 @@ const ModalRenameChannel = () => {
     dispatch(setShowModalRenameChannel());
   };
 
-  const handleSetNewChannelName = async (newName, userToken, changingChannelId) => {
-    const filteredName = censorFunc(newName);
+  const handleSetNewChannelName = async (name, userToken, changingChannelId) => {
+    const filteredName = censorFunc(name);
     const newEdditedChannelName = { name: filteredName };
     const pathToRenameChannel = [routes.channelsPath(), changingChannelId].join('/');
     try {
@@ -54,7 +54,7 @@ const ModalRenameChannel = () => {
         },
       });
       if (response.data) {
-        dispatch(setNewChannelName({ id: response.data.id, newName: response.data.name }));
+        dispatch(setNewChannelName({ id: response.data.id, name: response.data.name }));
         handleSetShowModalRenameChannel();
         dispatch(setShowNotifyRenameChannel());
       }

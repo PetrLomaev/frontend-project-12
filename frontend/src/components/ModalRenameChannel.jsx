@@ -54,7 +54,7 @@ const ModalRenameChannel = () => {
         },
       });
       if (response.data) {
-        dispatch(setNewChannelName({ id: response.data.id, name: response.data.name }));
+        // dispatch(setNewChannelName({ id: response.data.id, name: response.data.name }));
         handleSetShowModalRenameChannel();
         dispatch(setShowNotifyRenameChannel());
       }
@@ -72,7 +72,7 @@ const ModalRenameChannel = () => {
   useEffect(() => {
     socket.on('renameChannel', (currentRenameChannel) => {
       console.log('currentRenameChannel>>>', currentRenameChannel);
-      // dispatch(setNewChannelName(currentRenameChannel));
+      dispatch(setNewChannelName(currentRenameChannel));
     });
     return () => {
       socket.off('renameChannel');

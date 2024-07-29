@@ -91,6 +91,7 @@ const LoginPage = () => {
   });
 
   const handleLogOut = () => {
+    localStorage.removeItem('token');
     dispatch(logOut());
   };
 

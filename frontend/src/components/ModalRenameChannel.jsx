@@ -72,12 +72,12 @@ const ModalRenameChannel = () => {
   useEffect(() => {
     socket.on('renameChannel', (currentRenameChannel) => {
       console.log('currentRenameChannel>>>', currentRenameChannel);
-      // dispatch(setNewChannelName(currentRenameChannel));
+      dispatch(setNewChannelName(currentRenameChannel));
     });
     return () => {
       socket.off('renameChannel');
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     setTimeout(() => {

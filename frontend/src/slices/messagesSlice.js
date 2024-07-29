@@ -32,7 +32,7 @@ export const {
 export const getMessages = (state) => state.messages.messages;
 export const getCountOfMessages = (state, activeChannelId) => {
   const messagesOfActiveChannel = state.messages.messages
-    .filter((message) => message.channelId === activeChannelId);
+    .filter((message) => Number(message.channelId) === Number(activeChannelId));
   return messagesOfActiveChannel.length;
 };
 export default messagesSlice.reducer;

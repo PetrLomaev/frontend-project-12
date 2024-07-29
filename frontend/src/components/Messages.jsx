@@ -115,7 +115,7 @@ const Messages = () => {
       </div>
       <div id="messages-box" className="chat-messages overflow-auto px-5">
         {messages
-          .filter((message) => message.channelId === activeChannelId)
+          .filter((message) => Number(message.channelId) === Number(activeChannelId))
           .map((message) => (
             <div key={message.id} className="text-break mb-2">
               <b>{message.username}</b>

@@ -136,7 +136,7 @@ const ModalAddChannel = () => {
               onChange={formInit.handleChange}
               onBlur={formInit.handleBlur}
               value={formInit.values.newChannelName}
-              innerRef={inputRef}
+              ref={inputRef}
               isInvalid={formInit.touched.newChannelName && (!!formInit.errors.newChannelName)}
             />
 

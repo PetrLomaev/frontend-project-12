@@ -143,7 +143,7 @@ const ModalRenameChannel = () => {
               onChange={formInit.handleChange}
               onBlur={formInit.handleBlur}
               value={formInit.values.renameChannelName}
-              innerRef={inputRef}
+              ref={inputRef}
               isInvalid={formInit.touched.renameChannelName
                 && (!!formInit.errors.renameChannelName)}
             />

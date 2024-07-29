@@ -64,8 +64,9 @@ const HomePage = () => {
         console.log(e);
       }
     };
+
     getChannelsData(token);
-  }, [token, dispatch]);
+  }, [token, dispatch, isAuthorization]);
 
   useEffect(() => {
     const getMessagesData = async (userToken) => {
@@ -81,8 +82,9 @@ const HomePage = () => {
         console.log(e);
       }
     };
+
     getMessagesData(token);
-  }, [token, dispatch]);
+  }, [token, dispatch, isAuthorization]);
 
   useEffect(() => {
     if (!isAuthorization) {

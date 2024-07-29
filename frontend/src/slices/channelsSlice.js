@@ -45,7 +45,7 @@ const channelsSlice = createSlice({
     setNewChannelName(state, action) { // Обновить имя конкретного канала по указанному id и newName
       const { id, name } = action.payload;
       state.channels.forEach((channel) => {
-        if (channel.id === id) {
+        if (Number(channel.id) === Number(id)) {
           channel.name = name;
         }
       });
@@ -57,7 +57,7 @@ const channelsSlice = createSlice({
     },
     setDeleteChannel(state, action) {
       const { id } = action.payload;
-      const updatedChannels = state.channels.filter((channel) => channel.id !== id);
+      const updatedChannels = state.channels.filter((channel) => Number(channel.id) !== Number(id));
       state.channels = updatedChannels;
     },
     setChannelDataForDelete(state, action) {

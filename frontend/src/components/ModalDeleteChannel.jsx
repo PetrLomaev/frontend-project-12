@@ -86,9 +86,9 @@ const ModalDeleteChannel = () => {
   }, [isShowNotifyServerError, dispatch, t]);
 
   useEffect(() => {
-    socket.on('removeChannel', (currentRemoveChannel) => {
-      console.log('currentRemoveChannel>>>', currentRemoveChannel);
-      dispatch(setDeleteChannel(currentRemoveChannel));
+    socket.on('removeChannel', ({ id }) => {
+      // console.log('currentRemoveChannel>>>', currentRemoveChannel);
+      dispatch(setDeleteChannel(id));
     });
     return () => {
       socket.off('removeChannel');

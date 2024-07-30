@@ -1,9 +1,19 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { logOut, getIsAuthorization } from '../slices/authorizationSlice';
 import image404 from '../images/404-image.png';
 
 const Page404 = () => {
+  const dispatch = useDispatch();
   const { t } = useTranslation();
+
+  const isAuthorization = useSelector(getIsAuthorization);
+
+  const handleLogOut = () => {
+    dispatch(logOut());
+  };
+
   return (
     <div className="d-flex flex-column h-100">
       <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
@@ -11,6 +21,11 @@ const Page404 = () => {
           <a className="navbar-brand" href="/">
             {t('headerChat.header')}
           </a>
+          {isAuthorization && (
+          <button type="button" className="btn btn-primary" onClick={handleLogOut}>
+            {t('homePage.exitButton')}
+          </button>
+          )}
         </div>
       </nav>
       <div className="text-center">

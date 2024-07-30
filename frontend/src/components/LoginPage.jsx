@@ -9,7 +9,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import routes from '../routes';
 import startImage from '../images/start-image.jpeg';
 import {
-  setToken,
   logIn,
   logOut,
   getIsAuthorization,
@@ -33,15 +32,14 @@ const LoginPage = () => {
         username: formValue.username,
         password: formValue.password,
       });
-      const { token } = response.data;
-      dispatch(setToken(token));
-      dispatch(logIn(response.data.username));
-      localStorage.setItem('token', token);
-      const tokenValueInStorage = localStorage.getItem('token');
-
-      if (tokenValueInStorage && tokenValueInStorage.length > 0) {
-        setShowError(false);
-        navigate('/');
+      if (response.data) {
+        const { token, username } = response.data;
+        dispatch(logIn({ token, username }));
+        const tokenValueInStorage = localStorage.getItem('token');
+        if (tokenValueInStorage && tokenValueInStorage.length > 0) {
+          setShowError(false);
+          navigate('/');
+        }
       } else {
         setShowError(true);
         navigate('/login');
@@ -91,7 +89,6 @@ const LoginPage = () => {
   });
 
   const handleLogOut = () => {
-    localStorage.removeItem('token');
     dispatch(logOut());
   };
 

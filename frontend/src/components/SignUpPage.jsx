@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import routes from '../routes';
 import signUpImage from '../images/signup-image.jpg';
 import {
-  setToken,
   logIn,
   logOut,
   getIsAuthorization,
@@ -56,14 +55,11 @@ const SignUpPage = () => {
       // const tokenValueInStorage = localStorage.getItem('token');
 
       if (response.data) {
-        const { token } = response.data;
+        const { token, username } = response.data;
         if (localStorage.getItem('token')) {
-          localStorage.removeItem('token');
           dispatch(logOut());
         }
-        localStorage.setItem('token', token);
-        dispatch(setToken(token));
-        dispatch(logIn(response.data.username));
+        dispatch(logIn({ token, username }));
         setShowNameError(false);
         navigate('/');
       } else {
@@ -109,7 +105,6 @@ const SignUpPage = () => {
   });
 
   const handleLogOut = () => {
-    localStorage.removeItem('token');
     dispatch(logOut());
   };
 
@@ -125,7 +120,6 @@ const SignUpPage = () => {
             {t('homePage.exitButton')}
           </button>
           )}
-
         </div>
       </nav>
 

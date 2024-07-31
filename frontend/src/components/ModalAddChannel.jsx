@@ -13,7 +13,7 @@ import {
 } from '../slices/channelsSlice';
 import routes from '../routes';
 import {
-  getToken,
+  // getToken,
   setShowNotifyNetworkError,
   getShowNotifyNetworkError,
   setShowNotifyServerError,
@@ -29,7 +29,8 @@ const ModalAddChannel = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const token = useSelector(getToken);
+  // const token = useSelector(getToken);
+  const token = localStorage.getItem('token');
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 

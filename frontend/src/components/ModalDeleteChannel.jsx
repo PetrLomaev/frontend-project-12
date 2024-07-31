@@ -14,7 +14,7 @@ import {
 import { deleteMessagesDuringDeleteChannel } from '../slices/messagesSlice';
 import routes from '../routes';
 import {
-  getToken,
+  // getToken,
   setShowNotifyNetworkError,
   getShowNotifyNetworkError,
   setShowNotifyServerError,
@@ -29,7 +29,8 @@ const ModalDeleteChannel = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const token = useSelector(getToken);
+  // const token = useSelector(getToken);
+  const token = localStorage.getItem('token');
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
@@ -86,9 +87,9 @@ const ModalDeleteChannel = () => {
   }, [isShowNotifyServerError, dispatch, t]);
 
   useEffect(() => {
-    socket.on('removeChannel', ({ id }) => {
+    socket.on('removeChannel', (currentRemoveChannel) => {
       // console.log('currentRemoveChannel>>>', currentRemoveChannel);
-      dispatch(setDeleteChannel(id));
+      dispatch(setDeleteChannel(currentRemoveChannel));
     });
     return () => {
       socket.off('removeChannel');

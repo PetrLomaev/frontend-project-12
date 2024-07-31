@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast, Bounce } from 'react-toastify';
-import { getIsAuthorization, getToken, logOut } from '../slices/authorizationSlice';
+import { getIsAuthorization, logOut } from '../slices/authorizationSlice';
 import {
   setChannels,
   getShowModalAddChannel,
@@ -40,7 +40,8 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const token = useSelector(getToken);
+  // const token = useSelector(getToken);
+  const token = localStorage.getItem('token');
   const isAuthorization = useSelector(getIsAuthorization);
 
   const isShowModalAddChannel = useSelector(getShowModalAddChannel);
@@ -66,7 +67,7 @@ const HomePage = () => {
     };
 
     getChannelsData(token);
-  }, [token, dispatch, isAuthorization]);
+  }, [token, dispatch]);
 
   useEffect(() => {
     const getMessagesData = async (userToken) => {
@@ -84,7 +85,7 @@ const HomePage = () => {
     };
 
     getMessagesData(token);
-  }, [token, dispatch, isAuthorization]);
+  }, [token, dispatch]);
 
   useEffect(() => {
     if (!isAuthorization) {

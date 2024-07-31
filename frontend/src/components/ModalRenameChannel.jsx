@@ -17,7 +17,7 @@ import {
 } from '../slices/channelsSlice';
 import routes from '../routes';
 import {
-  getToken,
+  // getToken,
   setShowNotifyNetworkError,
   getShowNotifyNetworkError,
   setShowNotifyServerError,
@@ -33,7 +33,8 @@ const ModalRenameChannel = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const token = useSelector(getToken);
+  // const token = useSelector(getToken);
+  const token = localStorage.getItem('token');
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
@@ -54,7 +55,7 @@ const ModalRenameChannel = () => {
         },
       });
       if (response.data) {
-        dispatch(setNewChannelName({ id: response.data.id, name: response.data.name }));
+        // dispatch(setNewChannelName({ id: response.data.id, name: response.data.name }));
         handleSetShowModalRenameChannel();
         dispatch(setShowNotifyRenameChannel());
       }
@@ -72,13 +73,13 @@ const ModalRenameChannel = () => {
   useEffect(() => {
     socket.on('renameChannel', (currentRenameChannel) => {
       // console.log('currentRenameChannel>>>', currentRenameChannel);
-      const update = { name: currentRenameChannel.name };
-      dispatch(setNewChannelName({ id: currentRenameChannel.id, update }));
+      // const update = { name: currentRenameChannel.name };
+      dispatch(setNewChannelName({ id: currentRenameChannel.id, name: currentRenameChannel.name }));
     });
     return () => {
       socket.off('renameChannel');
     };
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {

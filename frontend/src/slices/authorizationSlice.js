@@ -41,7 +41,6 @@ const authorizationSlice = createSlice({
 export const {
   logIn,
   logOut,
-  setToken,
   setShowNotifyNetworkError,
   setShowNotifyServerError,
 } = authorizationSlice.actions;

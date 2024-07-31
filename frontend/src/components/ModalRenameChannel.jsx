@@ -55,7 +55,7 @@ const ModalRenameChannel = () => {
         },
       });
       if (response.data) {
-        // dispatch(setNewChannelName({ id: response.data.id, name: response.data.name }));
+        dispatch(setNewChannelName({ id: response.data.id, name: response.data.name }));
         handleSetShowModalRenameChannel();
         dispatch(setShowNotifyRenameChannel());
       }

@@ -7,9 +7,8 @@ import {
 } from 'react-bootstrap';
 import axios from 'axios';
 import * as yup from 'yup';
-import { io } from 'socket.io-client';
 import {
-  getChannels, setActiveChannel, setShowModalAddChannel, addChannel, setShowNotifyAddChannel,
+  getChannels, setActiveChannel, setShowModalAddChannel, setShowNotifyAddChannel,
 } from '../slices/channelsSlice';
 import routes from '../routes';
 import {
@@ -22,8 +21,6 @@ import {
 import censorFunc from '../utils/censor';
 import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
-
-const socket = io();
 
 const ModalAddChannel = () => {
   const dispatch = useDispatch();
@@ -66,16 +63,6 @@ const ModalAddChannel = () => {
       }
     }
   };
-
-  useEffect(() => {
-    socket.on('newChannel', (currentNewChannel) => {
-      console.log('Current newChannel>>>', currentNewChannel);
-      dispatch(addChannel(currentNewChannel));
-    });
-    return () => {
-      socket.off('newChannel');
-    };
-  }, []);
 
   const channels = useSelector(getChannels);
 

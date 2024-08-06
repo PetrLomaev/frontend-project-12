@@ -3,12 +3,10 @@ import { Button, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { io } from 'socket.io-client';
 import {
   setActiveChannel,
   getActiveChannelForDelete,
   setShowModalDeleteChannel,
-  setDeleteChannel,
   setShowNotifyDeleteChannel,
 } from '../slices/channelsSlice';
 import { deleteMessagesDuringDeleteChannel } from '../slices/messagesSlice';
@@ -22,8 +20,6 @@ import {
 } from '../slices/authorizationSlice';
 import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
-
-const socket = io();
 
 const ModalDeleteChannel = () => {
   const dispatch = useDispatch();
@@ -40,7 +36,6 @@ const ModalDeleteChannel = () => {
 
   const handleSetDeleteChannel = async (userToken, deletedChannelId) => {
     const pathToDeleteChannel = [routes.channelsPath(), deletedChannelId].join('/');
-    // const pathToDeleteMessage = [routes.messagesPath(), deletedChannelId].join('/');
     try {
       const response = await axios.delete(pathToDeleteChannel, {
         headers: {
@@ -49,13 +44,6 @@ const ModalDeleteChannel = () => {
       });
       if (response.data) {
         // dispatch(setDeleteChannel({ id: response.data.id }));
-        /* Нужно ли это?
-        await axios.delete(pathToDeleteMessage, {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        });
-        */
         dispatch(deleteMessagesDuringDeleteChannel({ id: response.data.id }));
         handleSetShowModalDeleteChannel();
         dispatch(setActiveChannel(1));
@@ -85,16 +73,6 @@ const ModalDeleteChannel = () => {
       dispatch(setShowNotifyServerError());
     }
   }, [isShowNotifyServerError, dispatch, t]);
-
-  useEffect(() => {
-    socket.on('removeChannel', (currentRemoveChannel) => {
-      // console.log('currentRemoveChannel>>>', currentRemoveChannel);
-      dispatch(setDeleteChannel(currentRemoveChannel));
-    });
-    return () => {
-      socket.off('removeChannel');
-    };
-  }, []);
 
   const activeChannelForDelete = useSelector(getActiveChannelForDelete);
 

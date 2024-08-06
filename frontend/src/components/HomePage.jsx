@@ -27,14 +27,6 @@ import routes from '../routes';
 import '../App.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-/*
-const handleClick = () => {
-  //localStorage.clear();
-  const navigate = useNavigate();
-  navigate('/login');
-};
-*/
-
 const HomePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,7 +59,7 @@ const HomePage = () => {
     };
 
     getChannelsData(token);
-  }, [token, dispatch]);
+  }, [dispatch, token]);
 
   useEffect(() => {
     const getMessagesData = async (userToken) => {
@@ -85,7 +77,7 @@ const HomePage = () => {
     };
 
     getMessagesData(token);
-  }, [token, dispatch]);
+  }, [dispatch, token]);
 
   useEffect(() => {
     if (!isAuthorization) {

@@ -3,16 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Formik, Field, Form } from 'formik';
 import { Button } from 'react-bootstrap';
-import { io } from 'socket.io-client';
 import axios from 'axios';
-import {
-  getMessages,
-  getCountOfMessages,
-  addMessage,
-} from '../slices/messagesSlice';
+import { getMessages, getCountOfMessages } from '../slices/messagesSlice';
 import {
   getUser,
-  getToken,
   setShowNotifyNetworkError,
   getShowNotifyNetworkError,
   setShowNotifyServerError,
@@ -24,8 +18,6 @@ import censorFunc from '../utils/censor';
 import notifyError from '../utils/notifyError';
 import '../App.css';
 import 'react-toastify/dist/ReactToastify.css';
-
-const socket = io();
 
 const Messages = () => {
   const dispatch = useDispatch();
@@ -52,7 +44,8 @@ const Messages = () => {
   };
 
   const user = useSelector(getUser);
-  const token = useSelector(getToken);
+  // const token = useSelector(getToken);
+  const token = localStorage.getItem('token');
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
@@ -78,15 +71,6 @@ const Messages = () => {
       username,
     };
   };
-
-  useEffect(() => {
-    socket.on('newMessage', (currentMessage) => {
-      dispatch(addMessage(currentMessage));
-    });
-    return () => {
-      socket.off('newMessage');
-    };
-  }, [dispatch]);
 
   useEffect(() => {
     if (isShowNotifyNetworkError) {

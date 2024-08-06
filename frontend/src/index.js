@@ -1,24 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import { Provider, ErrorBoundary } from '@rollbar/react';
-import Rollbar from 'rollbar';
-import App from './App';
-
-const rollbarInit = {
-  accessToken: '206a4d562e91496ea0a8654923663f9c',
-  environment: 'testenv',
-};
-
-const rollbarConfig = new Rollbar(rollbarInit);
+import 'react-toastify/dist/ReactToastify.css';
+import Init from './init.jsx';
+import App from './App.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Provider config={rollbarConfig}>
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    </Provider>
+    <Init>
+      <App />
+    </Init>
   </React.StrictMode>,
 );

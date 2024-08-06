@@ -7,11 +7,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import * as yup from 'yup';
-import { io } from 'socket.io-client';
 import {
   getChannels,
   setShowModalRenameChannel,
-  setNewChannelName,
   getActiveChannelForRename,
   setShowNotifyRenameChannel,
 } from '../slices/channelsSlice';
@@ -26,8 +24,6 @@ import {
 import censorFunc from '../utils/censor';
 import notifyError from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
-
-const socket = io('http://localhost:3000');
 
 const ModalRenameChannel = () => {
   const dispatch = useDispatch();
@@ -55,7 +51,7 @@ const ModalRenameChannel = () => {
         },
       });
       if (response.data) {
-        dispatch(setNewChannelName({ id: response.data.id, name: response.data.name }));
+        // dispatch(setNewChannelName({ id: response.data.id, name: response.data.name }));
         handleSetShowModalRenameChannel();
         dispatch(setShowNotifyRenameChannel());
       }
@@ -69,17 +65,6 @@ const ModalRenameChannel = () => {
       }
     }
   };
-
-  useEffect(() => {
-    socket.on('renameChannel', (currentRenameChannel) => {
-      // console.log('currentRenameChannel>>>', currentRenameChannel);
-      // const update = { name: currentRenameChannel.name };
-      dispatch(setNewChannelName({ id: currentRenameChannel.id, name: currentRenameChannel.name }));
-    });
-    return () => {
-      socket.off('renameChannel');
-    };
-  }, []);
 
   useEffect(() => {
     setTimeout(() => {

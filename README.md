@@ -5,7 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/d6c1dc93af33d4e6b7fd/maintainability)](https://codeclimate.com/github/PetrLomaev/frontend-project-12/maintainability)
 
 
-### Project "Chat"
+# Project "Chat"
 
 ## Project Description
 
@@ -41,7 +41,9 @@ Node.js Command Line
 `git clone git@github.com:PetrLomaev/frontend-project-12.git`
 
 `make install`
+
 `make build`
+
 `make start`
 
 

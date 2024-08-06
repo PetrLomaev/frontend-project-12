@@ -17,7 +17,7 @@ import {
   setShowNotifyServerError,
   getShowNotifyServerError,
 } from '../slices/authorizationSlice';
-import notifyError from '../utils/notifyError';
+import { notifyError } from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
 const SignUpPage = () => {
@@ -52,7 +52,6 @@ const SignUpPage = () => {
         username: formValue.username,
         password: formValue.password,
       });
-      // const tokenValueInStorage = localStorage.getItem('token');
 
       if (response.data) {
         const { token, username } = response.data;
@@ -209,7 +208,6 @@ const SignUpPage = () => {
                     <div className="invalid-feedback" style={{ display: 'block', color: 'red' }}>{t('errors.userAlreadyExists')}</div>
                   )}
                 </Form>
-
               </div>
             </div>
           </div>

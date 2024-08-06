@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
-import {
-  Button, Form, Modal,
-} from 'react-bootstrap';
+import { Button, Form, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
@@ -15,21 +13,19 @@ import {
 } from '../slices/channelsSlice';
 import routes from '../routes';
 import {
-  // getToken,
   setShowNotifyNetworkError,
   getShowNotifyNetworkError,
   setShowNotifyServerError,
   getShowNotifyServerError,
 } from '../slices/authorizationSlice';
 import censorFunc from '../utils/censor';
-import notifyError from '../utils/notifyError';
+import { notifyError } from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ModalRenameChannel = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  // const token = useSelector(getToken);
   const token = localStorage.getItem('token');
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
@@ -51,7 +47,6 @@ const ModalRenameChannel = () => {
         },
       });
       if (response.data) {
-        // dispatch(setNewChannelName({ id: response.data.id, name: response.data.name }));
         handleSetShowModalRenameChannel();
         dispatch(setShowNotifyRenameChannel());
       }

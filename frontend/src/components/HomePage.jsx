@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import { toast, Bounce } from 'react-toastify';
+import { notifySucess } from '../utils/notifyError';
 import { getIsAuthorization, logOut } from '../slices/authorizationSlice';
 import {
   setChannels,
@@ -32,7 +32,6 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // const token = useSelector(getToken);
   const token = localStorage.getItem('token');
   const isAuthorization = useSelector(getIsAuthorization);
 
@@ -86,61 +85,22 @@ const HomePage = () => {
   });
 
   useEffect(() => {
-    const notifyAddChannel = () => {
-      toast.success(t('channels.notifyAdd'), {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce,
-      });
-    };
     if (isShowNotifyAddChannel) {
-      notifyAddChannel();
+      notifySucess(t('channels.notifyAdd'));
       dispatch(setShowNotifyAddChannel());
     }
   }, [isShowNotifyAddChannel, dispatch, t]);
 
   useEffect(() => {
-    const notifyRenameChannel = () => {
-      toast.success(t('channels.notifyRename'), {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce,
-      });
-    };
     if (isShowNotifyRenameChannel) {
-      notifyRenameChannel();
+      notifySucess(t('channels.notifyRename'));
       dispatch(setShowNotifyRenameChannel());
     }
   }, [isShowNotifyRenameChannel, dispatch, t]);
 
   useEffect(() => {
-    const notifyDeleteChannel = () => {
-      toast.success(t('channels.notifyDelete'), {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-        transition: Bounce,
-      });
-    };
     if (isShowNotifyDeleteChannel) {
-      notifyDeleteChannel();
+      notifySucess(t('channels.notifyDelete'));
       dispatch(setShowNotifyDeleteChannel());
     }
   }, [isShowNotifyDeleteChannel, dispatch, t]);
@@ -186,7 +146,6 @@ const HomePage = () => {
           {isShowModalRenameChannel && <ModalRenameChannel />}
           {isShowModalDeleteChannel && <ModalDeleteChannel />}
         </div>
-
       </div>
     </div>
     )

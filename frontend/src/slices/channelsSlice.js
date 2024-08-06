@@ -42,7 +42,7 @@ const channelsSlice = createSlice({
     setShowModalDeleteChannel(state) {
       state.showModalDeleteChannel = !state.showModalDeleteChannel;
     },
-    setNewChannelName(state, action) { // Обновить имя конкретного канала по указанному id и newName
+    setNewChannelName(state, action) {
       const { id, name } = action.payload;
       state.channels.forEach((channel) => {
         if (Number(channel.id) === Number(id)) {

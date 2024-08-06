@@ -17,7 +17,7 @@ import {
   setShowNotifyServerError,
   getShowNotifyServerError,
 } from '../slices/authorizationSlice';
-import notifyError from '../utils/notifyError';
+import { notifyError } from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {

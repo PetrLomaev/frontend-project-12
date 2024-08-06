@@ -33,7 +33,6 @@ const SocketProvider = ({ children, newSocket }) => {
       });
 
       socket.on('renameChannel', (payload) => {
-        // const { id, name } = payload;
         dispatch(setNewChannelName(payload));
       });
     }

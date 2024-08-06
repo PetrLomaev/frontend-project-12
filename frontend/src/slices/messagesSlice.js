@@ -11,14 +11,14 @@ const messagesSlice = createSlice({
   name: 'messages',
   initialState,
   reducers: {
-    loadMessages(state, action) { // Подгрузить ВСЕ сообщения в стейт
+    loadMessages(state, action) {
       state.messages = action.payload;
     },
-    addMessage(state, action) { // Добавить ОДНО сообщение
+    addMessage(state, action) {
       state.messages.push(action.payload);
       state.amountOfMessages = state.messages.length;
     },
-    deleteMessagesDuringDeleteChannel(state, action) { // При удалении канала удалить сообщения
+    deleteMessagesDuringDeleteChannel(state, action) {
       const { id } = action.payload;
       const updatedMessages = state.messages.filter((message) => message.channelId !== id);
       state.messages = updatedMessages;
@@ -27,7 +27,7 @@ const messagesSlice = createSlice({
 });
 
 export const {
-  loadMessages, addMessage, deleteMessagesDuringDeleteChannel, setInTheProcessSending,
+  loadMessages, addMessage, deleteMessagesDuringDeleteChannel,
 } = messagesSlice.actions;
 export const getMessages = (state) => state.messages.messages;
 export const getCountOfMessages = (state, activeChannelId) => {

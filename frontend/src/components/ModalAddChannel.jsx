@@ -2,9 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
-import {
-  Button, Form, Modal,
-} from 'react-bootstrap';
+import { Button, Form, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import * as yup from 'yup';
 import {
@@ -12,21 +10,19 @@ import {
 } from '../slices/channelsSlice';
 import routes from '../routes';
 import {
-  // getToken,
   setShowNotifyNetworkError,
   getShowNotifyNetworkError,
   setShowNotifyServerError,
   getShowNotifyServerError,
 } from '../slices/authorizationSlice';
 import censorFunc from '../utils/censor';
-import notifyError from '../utils/notifyError';
+import { notifyError } from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ModalAddChannel = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  // const token = useSelector(getToken);
   const token = localStorage.getItem('token');
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);
@@ -47,8 +43,6 @@ const ModalAddChannel = () => {
         },
       });
       if (response.data) {
-        console.log('New channel data>>>', response.data);
-        // dispatch(addChannel(response.data));
         dispatch(setActiveChannel(response.data.id));
         dispatch(setShowNotifyAddChannel());
         handleSetShowModalAddChannel();
@@ -127,7 +121,6 @@ const ModalAddChannel = () => {
               ref={inputRef}
               isInvalid={formInit.touched.newChannelName && (!!formInit.errors.newChannelName)}
             />
-
             <Form.Control.Feedback type="invalid">
               {formInit.errors.newChannelName}
             </Form.Control.Feedback>

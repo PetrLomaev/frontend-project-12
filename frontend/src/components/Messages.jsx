@@ -15,7 +15,7 @@ import {
 import { getActiveChannelId, getActiveChannelName } from '../slices/channelsSlice';
 import routes from '../routes';
 import censorFunc from '../utils/censor';
-import notifyError from '../utils/notifyError';
+import { notifyError } from '../utils/notifyError';
 import '../App.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -44,7 +44,6 @@ const Messages = () => {
   };
 
   const user = useSelector(getUser);
-  // const token = useSelector(getToken);
   const token = localStorage.getItem('token');
   const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
   const isShowNotifyServerError = useSelector(getShowNotifyServerError);

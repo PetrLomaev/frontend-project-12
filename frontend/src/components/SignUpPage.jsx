@@ -1,22 +1,14 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { Button, Form, FloatingLabel } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import routes from '../routes';
+import { serverRoutes, pageRoutes } from '../routes';
 import signUpImage from '../images/signup-image.jpg';
-import {
-  logIn,
-  logOut,
-  getIsAuthorization,
-  setShowNotifyNetworkError,
-  getShowNotifyNetworkError,
-  setShowNotifyServerError,
-  getShowNotifyServerError,
-} from '../slices/authorizationSlice';
+import { logIn, logOut, getIsAuthorization } from '../slices/authorizationSlice';
 import { notifyError } from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -43,12 +35,10 @@ const SignUpPage = () => {
   });
 
   const isAuthorization = useSelector(getIsAuthorization);
-  const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
-  const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
   const handleSubmit = async (formValue) => {
     try {
-      const response = await axios.post(routes.signUpPath(), {
+      const response = await axios.post(serverRoutes.signUpPath(), {
         username: formValue.username,
         password: formValue.password,
       });
@@ -60,38 +50,24 @@ const SignUpPage = () => {
         }
         dispatch(logIn({ token, username }));
         setShowNameError(false);
-        navigate('/');
+        navigate(pageRoutes.home);
       } else {
         setShowNameError(true);
-        navigate('/signup');
+        navigate(pageRoutes.signUp);
       }
     } catch (error) {
       if (error.response.status === 409) {
         setShowNameError(true);
       }
       if (error.code === 'ERR_NETWORK') {
-        dispatch(setShowNotifyNetworkError());
+        notifyError(t('errors.notifyNetworkError'));
       }
       if (error.response.status >= 500) {
-        dispatch(setShowNotifyServerError());
+        notifyError(t('errors.notifyServerError'));
       }
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    if (isShowNotifyNetworkError) {
-      notifyError(t('errors.notifyNetworkError'));
-      dispatch(setShowNotifyNetworkError());
-    }
-  }, [isShowNotifyNetworkError, dispatch, t]);
-
-  useEffect(() => {
-    if (isShowNotifyServerError) {
-      notifyError(t('errors.notifyServerError'));
-      dispatch(setShowNotifyServerError());
-    }
-  }, [isShowNotifyServerError, dispatch, t]);
 
   const formInit = useFormik({
     initialValues: {

@@ -1,6 +1,7 @@
 import { useContext } from 'react';
-import SocketContext from '../contexts/index.js';
+import { SocketContext, ProfanityContext } from '../contexts/index.js';
 
 const useSocket = () => useContext(SocketContext);
+const useProfanity = () => useContext(ProfanityContext);
 
-export default useSocket;
+export { useSocket, useProfanity };

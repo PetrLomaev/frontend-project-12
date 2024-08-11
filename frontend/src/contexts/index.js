@@ -2,4 +2,6 @@ import { createContext } from 'react';
 
 const SocketContext = createContext({});
 
-export default SocketContext;
+const ProfanityContext = createContext({});
+
+export { SocketContext, ProfanityContext };

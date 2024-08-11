@@ -11,12 +11,9 @@ const initialState = {
   showNotifyAddChannel: false,
   showNotifyRenameChannel: false,
   showNotifyDeleteChannel: false,
-  activeChannelForRename: {
+  activeChannelForChange: {
     id: null,
     name: '',
-  },
-  activeChannelForDelete: {
-    id: null,
   },
 };
 
@@ -50,19 +47,19 @@ const channelsSlice = createSlice({
         }
       });
     },
-    setChannelDataForRename(state, action) {
+    setChannelDataForChange(state, action) {
       const { channelId, channelName } = action.payload;
-      state.activeChannelForRename.id = channelId;
-      state.activeChannelForRename.name = channelName;
+      state.activeChannelForChange.id = channelId;
+      if (channelName) {
+        state.activeChannelForChange.name = channelName;
+      } else {
+        state.activeChannelForChange.name = '';
+      }
     },
     setDeleteChannel(state, action) {
       const { id } = action.payload;
       const updatedChannels = state.channels.filter((channel) => Number(channel.id) !== Number(id));
       state.channels = updatedChannels;
-    },
-    setChannelDataForDelete(state, action) {
-      const { channelId } = action.payload;
-      state.activeChannelForDelete.id = channelId;
     },
     setShowNotifyAddChannel(state) {
       state.showNotifyAddChannel = !state.showNotifyAddChannel;
@@ -83,10 +80,9 @@ export const {
   setShowModalAddChannel,
   setShowModalRenameChannel,
   setNewChannelName,
-  setChannelDataForRename,
+  setChannelDataForChange,
   setShowModalDeleteChannel,
   setDeleteChannel,
-  setChannelDataForDelete,
   setShowNotifyAddChannel,
   setShowNotifyRenameChannel,
   setShowNotifyDeleteChannel,
@@ -104,8 +100,7 @@ export const getActiveChannelName = (state) => {
 export const getShowModalAddChannel = (state) => state.channels.showModalAddChannel;
 export const getShowModalRenameChannel = (state) => state.channels.showModalRenameChannel;
 export const getShowModalDeleteChannel = (state) => state.channels.showModalDeleteChannel;
-export const getActiveChannelForRename = (state) => state.channels.activeChannelForRename;
-export const getActiveChannelForDelete = (state) => state.channels.activeChannelForDelete;
+export const getActiveChannelForChange = (state) => state.channels.activeChannelForChange;
 export const getShowNotifyAddChannel = (state) => state.channels.showNotifyAddChannel;
 export const getShowNotifyRenameChannel = (state) => state.channels.showNotifyRenameChannel;
 export const getShowNotifyDeleteChannel = (state) => state.channels.showNotifyDeleteChannel;

@@ -8,9 +8,8 @@ import {
   setActiveChannel,
   setShowModalAddChannel,
   setShowModalRenameChannel,
-  setChannelDataForRename,
+  setChannelDataForChange,
   setShowModalDeleteChannel,
-  setChannelDataForDelete,
 } from '../slices/channelsSlice';
 import '../App.css';
 
@@ -30,12 +29,12 @@ const Channels = () => {
   };
 
   const handleSetChannelDataForRename = (channelId, channelName) => {
-    dispatch(setChannelDataForRename({ channelId, channelName }));
+    dispatch(setChannelDataForChange({ channelId, channelName }));
     dispatch(setShowModalRenameChannel());
   };
 
   const handleSetChannelDataForDelete = (channelId) => {
-    dispatch(setChannelDataForDelete({ channelId }));
+    dispatch(setChannelDataForChange({ channelId }));
     dispatch(setShowModalDeleteChannel());
   };
 

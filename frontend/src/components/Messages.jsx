@@ -1,41 +1,36 @@
 import React, { useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Formik, Field, Form } from 'formik';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { getMessages, getCountOfMessages } from '../slices/messagesSlice';
-import {
-  getUser,
-  setShowNotifyNetworkError,
-  getShowNotifyNetworkError,
-  setShowNotifyServerError,
-  getShowNotifyServerError,
-} from '../slices/authorizationSlice';
+import { getUser } from '../slices/authorizationSlice';
 import { getActiveChannelId, getActiveChannelName } from '../slices/channelsSlice';
-import routes from '../routes';
-import censorFunc from '../utils/censor';
+import { serverRoutes } from '../routes';
+import { useProfanity } from '../hooks/index';
 import { notifyError } from '../utils/notifyError';
 import '../App.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Messages = () => {
-  const dispatch = useDispatch();
   const { t } = useTranslation();
+  const profanity = useProfanity();
+  const getFilteredMessage = (message) => profanity(message).trim();
 
   const handleSubmitMessage = async (newMessage, userToken, { setSubmitting }) => {
     try {
-      await axios.post(routes.messagesPath(), newMessage, {
+      await axios.post(serverRoutes.messagesPath(), newMessage, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
       });
     } catch (error) {
       if (error.code === 'ERR_NETWORK') {
-        dispatch(setShowNotifyNetworkError());
+        notifyError(t('errors.notifyNetworkError'));
       }
       if (error.response.status >= 500) {
-        dispatch(setShowNotifyServerError());
+        notifyError(t('errors.notifyServerError'));
       }
       console.log(error);
     } finally {
@@ -45,8 +40,6 @@ const Messages = () => {
 
   const user = useSelector(getUser);
   const token = localStorage.getItem('token');
-  const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
-  const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
   const activeChannelName = useSelector(getActiveChannelName);
   const activeChannelId = useSelector(getActiveChannelId);
@@ -55,6 +48,7 @@ const Messages = () => {
   const countOfMessages = useSelector((state) => getCountOfMessages(state, activeChannelId));
 
   const inputRef = useRef(null);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -62,28 +56,17 @@ const Messages = () => {
     }
   }, []);
 
-  const textMessageToNewMessage = (textValue, channelId, username) => {
-    const filteredTextValue = censorFunc(textValue);
-    return {
-      body: filteredTextValue,
-      channelId,
-      username,
-    };
-  };
-
   useEffect(() => {
-    if (isShowNotifyNetworkError) {
-      notifyError(t('errors.notifyNetworkError'));
-      dispatch(setShowNotifyNetworkError());
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight);
     }
-  }, [isShowNotifyNetworkError, dispatch, t]);
+  }, [messages]);
 
-  useEffect(() => {
-    if (isShowNotifyServerError) {
-      notifyError(t('errors.notifyServerError'));
-      dispatch(setShowNotifyServerError());
-    }
-  }, [isShowNotifyServerError, dispatch, t]);
+  const textMessageToNewMessage = (textValue, channelId, username) => ({
+    body: getFilteredMessage(textValue),
+    channelId,
+    username,
+  });
 
   return (
     <div className="d-flex flex-column h-100">
@@ -96,7 +79,7 @@ const Messages = () => {
         </p>
         <span className="text-muted">{t('messages.counter.count', { count: countOfMessages })}</span>
       </div>
-      <div id="messages-box" className="chat-messages overflow-auto px-5">
+      <div ref={scrollRef} id="messages-box" className="chat-messages overflow-auto px-5">
         {messages
           .filter((message) => Number(message.channelId) === Number(activeChannelId))
           .map((message) => (

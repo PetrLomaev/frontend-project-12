@@ -1,22 +1,14 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { Button, Form, FloatingLabel } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useSelector, useDispatch } from 'react-redux';
-import routes from '../routes';
+import { serverRoutes, pageRoutes } from '../routes';
 import startImage from '../images/start-image.jpeg';
-import {
-  logIn,
-  logOut,
-  getIsAuthorization,
-  setShowNotifyNetworkError,
-  getShowNotifyNetworkError,
-  setShowNotifyServerError,
-  getShowNotifyServerError,
-} from '../slices/authorizationSlice';
+import { logIn, logOut, getIsAuthorization } from '../slices/authorizationSlice';
 import { notifyError } from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -28,7 +20,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (formValue) => {
     try {
-      const response = await axios.post(routes.loginPath(), {
+      const response = await axios.post(serverRoutes.loginPath(), {
         username: formValue.username,
         password: formValue.password,
       });
@@ -38,41 +30,25 @@ const LoginPage = () => {
         const tokenValueInStorage = localStorage.getItem('token');
         if (tokenValueInStorage && tokenValueInStorage.length > 0) {
           setShowError(false);
-          navigate('/');
+          navigate(pageRoutes.home);
         }
       } else {
         setShowError(true);
-        navigate('/login');
+        navigate(pageRoutes.login);
       }
     } catch (error) {
       console.log(error);
       if (error.code === 'ERR_NETWORK') {
-        dispatch(setShowNotifyNetworkError());
+        notifyError(t('errors.notifyNetworkError'));
       }
       if (error.response.status >= 500) {
-        dispatch(setShowNotifyServerError());
+        notifyError(t('errors.notifyServerError'));
       }
       setShowError(true);
     }
   };
 
   const isAuthorization = useSelector(getIsAuthorization);
-  const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
-  const isShowNotifyServerError = useSelector(getShowNotifyServerError);
-
-  useEffect(() => {
-    if (isShowNotifyNetworkError) {
-      notifyError(t('errors.notifyNetworkError'));
-      dispatch(setShowNotifyNetworkError());
-    }
-  }, [isShowNotifyNetworkError, dispatch, t]);
-
-  useEffect(() => {
-    if (isShowNotifyServerError) {
-      notifyError(t('errors.notifyServerError'));
-      dispatch(setShowNotifyServerError());
-    }
-  }, [isShowNotifyServerError, dispatch, t]);
 
   const schema = yup.object().shape({
     username: yup.string().required(t('errors.requiredField')),
@@ -165,7 +141,7 @@ const LoginPage = () => {
               <div className="card-footer p-4">
                 <div className="text-center">
                   <span>{t('loginPage.hasNoAccount')}</span>
-                  <a href="/signup">{t('loginPage.registration')}</a>
+                  <a href={pageRoutes.signUp}>{t('loginPage.registration')}</a>
                 </div>
               </div>
             </div>

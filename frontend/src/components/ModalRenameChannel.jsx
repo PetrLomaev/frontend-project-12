@@ -8,28 +8,20 @@ import * as yup from 'yup';
 import {
   getChannels,
   setShowModalRenameChannel,
-  getActiveChannelForRename,
-  setShowNotifyRenameChannel,
+  getActiveChannelForChange,
 } from '../slices/channelsSlice';
-import routes from '../routes';
-import {
-  setShowNotifyNetworkError,
-  getShowNotifyNetworkError,
-  setShowNotifyServerError,
-  getShowNotifyServerError,
-} from '../slices/authorizationSlice';
-import censorFunc from '../utils/censor';
-import { notifyError } from '../utils/notifyError';
+import { serverRoutes } from '../routes';
+import { useProfanity } from '../hooks/index';
+import { notifySucess, notifyError } from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ModalRenameChannel = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const profanity = useProfanity();
+  const getFilteredChannelName = (message) => profanity(message).trim();
 
   const token = localStorage.getItem('token');
-  const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
-  const isShowNotifyServerError = useSelector(getShowNotifyServerError);
-
   const inputRef = useRef(null);
 
   const handleSetShowModalRenameChannel = () => {
@@ -37,9 +29,8 @@ const ModalRenameChannel = () => {
   };
 
   const handleSetNewChannelName = async (name, userToken, changingChannelId) => {
-    const filteredName = censorFunc(name);
-    const newEdditedChannelName = { name: filteredName };
-    const pathToRenameChannel = [routes.channelsPath(), changingChannelId].join('/');
+    const newEdditedChannelName = { name: getFilteredChannelName(name) };
+    const pathToRenameChannel = [serverRoutes.channelsPath(), changingChannelId].join('/');
     try {
       const response = await axios.patch(pathToRenameChannel, newEdditedChannelName, {
         headers: {
@@ -48,15 +39,15 @@ const ModalRenameChannel = () => {
       });
       if (response.data) {
         handleSetShowModalRenameChannel();
-        dispatch(setShowNotifyRenameChannel());
+        notifySucess(t('channels.notifyRename'));
       }
     } catch (error) {
       console.log(error);
       if (error.code === 'ERR_NETWORK') {
-        dispatch(setShowNotifyNetworkError());
+        notifyError(t('errors.notifyNetworkError'));
       }
       if (error.response.status >= 500) {
-        dispatch(setShowNotifyServerError());
+        notifyError(t('errors.notifyServerError'));
       }
     }
   };
@@ -70,22 +61,8 @@ const ModalRenameChannel = () => {
     }, 100);
   }, []);
 
-  useEffect(() => {
-    if (isShowNotifyNetworkError) {
-      notifyError(t('errors.notifyNetworkError'));
-      dispatch(setShowNotifyNetworkError());
-    }
-  }, [isShowNotifyNetworkError, dispatch, t]);
-
-  useEffect(() => {
-    if (isShowNotifyServerError) {
-      notifyError(t('errors.notifyServerError'));
-      dispatch(setShowNotifyServerError());
-    }
-  }, [isShowNotifyServerError, dispatch, t]);
-
   const channels = useSelector(getChannels);
-  const activeChannelForRename = useSelector(getActiveChannelForRename);
+  const activeChannelForRename = useSelector(getActiveChannelForChange);
 
   const isUniqueChannelName = (name) => {
     const checkCannels = channels.filter((channel) => channel.name === name);

@@ -3,19 +3,13 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import { notifySucess } from '../utils/notifyError';
+import { notifyError } from '../utils/notifyError';
 import { getIsAuthorization, logOut } from '../slices/authorizationSlice';
 import {
   setChannels,
   getShowModalAddChannel,
   getShowModalRenameChannel,
   getShowModalDeleteChannel,
-  getShowNotifyAddChannel,
-  getShowNotifyRenameChannel,
-  getShowNotifyDeleteChannel,
-  setShowNotifyAddChannel,
-  setShowNotifyRenameChannel,
-  setShowNotifyDeleteChannel,
 } from '../slices/channelsSlice';
 import { loadMessages } from '../slices/messagesSlice';
 import Channels from './Channels';
@@ -23,7 +17,7 @@ import Messages from './Messages';
 import ModalAddChannel from './ModalAddChannel';
 import ModalRenameChannel from './ModalRenameChannel';
 import ModalDeleteChannel from './ModalDeleteChannel';
-import routes from '../routes';
+import { serverRoutes, pageRoutes } from '../routes';
 import '../App.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -38,22 +32,25 @@ const HomePage = () => {
   const isShowModalAddChannel = useSelector(getShowModalAddChannel);
   const isShowModalRenameChannel = useSelector(getShowModalRenameChannel);
   const isShowModalDeleteChannel = useSelector(getShowModalDeleteChannel);
-  const isShowNotifyAddChannel = useSelector(getShowNotifyAddChannel);
-  const isShowNotifyRenameChannel = useSelector(getShowNotifyRenameChannel);
-  const isShowNotifyDeleteChannel = useSelector(getShowNotifyDeleteChannel);
 
   useEffect(() => {
     const getChannelsData = async (userToken) => {
       try {
-        const responseChannels = await axios.get(routes.channelsPath(), {
+        const responseChannels = await axios.get(serverRoutes.channelsPath(), {
           headers: {
             Authorization: `Bearer ${userToken}`,
           },
         });
         const channelsData = responseChannels.data;
         dispatch(setChannels(channelsData));
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        console.log(error);
+        if (error.code === 'ERR_NETWORK') {
+          notifyError(t('errors.notifyNetworkError'));
+        }
+        if (error.response.status >= 500) {
+          notifyError(t('errors.notifyServerError'));
+        }
       }
     };
 
@@ -63,15 +60,21 @@ const HomePage = () => {
   useEffect(() => {
     const getMessagesData = async (userToken) => {
       try {
-        const responseMessages = await axios.get(routes.messagesPath(), {
+        const responseMessages = await axios.get(serverRoutes.messagesPath(), {
           headers: {
             Authorization: `Bearer ${userToken}`,
           },
         });
         const messagesData = responseMessages.data;
         dispatch(loadMessages(messagesData));
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        console.log(error);
+        if (error.code === 'ERR_NETWORK') {
+          notifyError(t('errors.notifyNetworkError'));
+        }
+        if (error.response.status >= 500) {
+          notifyError(t('errors.notifyServerError'));
+        }
       }
     };
 
@@ -80,30 +83,9 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!isAuthorization) {
-      navigate('/login');
+      navigate(pageRoutes.login);
     }
   });
-
-  useEffect(() => {
-    if (isShowNotifyAddChannel) {
-      notifySucess(t('channels.notifyAdd'));
-      dispatch(setShowNotifyAddChannel());
-    }
-  }, [isShowNotifyAddChannel, dispatch, t]);
-
-  useEffect(() => {
-    if (isShowNotifyRenameChannel) {
-      notifySucess(t('channels.notifyRename'));
-      dispatch(setShowNotifyRenameChannel());
-    }
-  }, [isShowNotifyRenameChannel, dispatch, t]);
-
-  useEffect(() => {
-    if (isShowNotifyDeleteChannel) {
-      notifySucess(t('channels.notifyDelete'));
-      dispatch(setShowNotifyDeleteChannel());
-    }
-  }, [isShowNotifyDeleteChannel, dispatch, t]);
 
   const handleLogOut = () => {
     dispatch(logOut());
@@ -113,7 +95,7 @@ const HomePage = () => {
     if (isAuthorization) {
       e.preventDefault();
     } else {
-      navigate('/');
+      navigate(pageRoutes.home);
     }
   };
 

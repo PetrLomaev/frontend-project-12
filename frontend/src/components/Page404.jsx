@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { logOut, getIsAuthorization } from '../slices/authorizationSlice';
 import image404 from '../images/404-image.png';
+import { pageRoutes } from '../routes';
 
 const Page404 = () => {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const Page404 = () => {
         <h1 className="h4 text-muted">{t('page404.header')}</h1>
         <p className="text-muted">
           {t('page404.youCanGo')}
-          <a href="/">
+          <a href={pageRoutes.home}>
             {t('page404.onMainPage')}
           </a>
         </p>

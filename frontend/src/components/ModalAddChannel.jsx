@@ -5,27 +5,19 @@ import { useFormik } from 'formik';
 import { Button, Form, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import * as yup from 'yup';
-import {
-  getChannels, setActiveChannel, setShowModalAddChannel, setShowNotifyAddChannel,
-} from '../slices/channelsSlice';
-import routes from '../routes';
-import {
-  setShowNotifyNetworkError,
-  getShowNotifyNetworkError,
-  setShowNotifyServerError,
-  getShowNotifyServerError,
-} from '../slices/authorizationSlice';
-import censorFunc from '../utils/censor';
-import { notifyError } from '../utils/notifyError';
+import { getChannels, setActiveChannel, setShowModalAddChannel } from '../slices/channelsSlice';
+import { serverRoutes } from '../routes';
+import { useProfanity } from '../hooks/index';
+import { notifySucess, notifyError } from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ModalAddChannel = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const profanity = useProfanity();
+  const getFilteredChannelName = (message) => profanity(message).trim();
 
   const token = localStorage.getItem('token');
-  const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
-  const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
   const inputRef = useRef(null);
 
@@ -34,26 +26,25 @@ const ModalAddChannel = () => {
   };
 
   const handleAddChannel = async (name, userToken) => {
-    const filteredName = censorFunc(name);
-    const newChannel = { name: filteredName };
+    const newChannel = { name: getFilteredChannelName(name) };
     try {
-      const response = await axios.post(routes.channelsPath(), newChannel, {
+      const response = await axios.post(serverRoutes.channelsPath(), newChannel, {
         headers: {
           Authorization: `Bearer ${userToken}`,
         },
       });
       if (response.data) {
         dispatch(setActiveChannel(response.data.id));
-        dispatch(setShowNotifyAddChannel());
+        notifySucess(t('channels.notifyAdd'));
         handleSetShowModalAddChannel();
       }
     } catch (error) {
       console.log(error);
       if (error.code === 'ERR_NETWORK') {
-        dispatch(setShowNotifyNetworkError());
+        notifyError(t('errors.notifyNetworkError'));
       }
       if (error.response.status >= 500) {
-        dispatch(setShowNotifyServerError());
+        notifyError(t('errors.notifyServerError'));
       }
     }
   };
@@ -67,20 +58,6 @@ const ModalAddChannel = () => {
       }
     }, 100);
   }, []);
-
-  useEffect(() => {
-    if (isShowNotifyNetworkError) {
-      notifyError(t('errors.notifyNetworkError'));
-      dispatch(setShowNotifyNetworkError());
-    }
-  }, [isShowNotifyNetworkError, dispatch, t]);
-
-  useEffect(() => {
-    if (isShowNotifyServerError) {
-      notifyError(t('errors.notifyServerError'));
-      dispatch(setShowNotifyServerError());
-    }
-  }, [isShowNotifyServerError, dispatch, t]);
 
   const isUniqueChannelName = (name) => {
     const checkChannels = channels.filter((channel) => channel.name === name);

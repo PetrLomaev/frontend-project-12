@@ -6,6 +6,7 @@ import LoginPage from './components/LoginPage';
 import HomePage from './components/HomePage';
 import SignUpPage from './components/SignUpPage';
 import Page404 from './components/Page404';
+import { pageRoutes } from './routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -13,10 +14,10 @@ const App = () => (
   <div className="App">
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<HomePage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="*" element={<Page404 />} />
+        <Route path={pageRoutes.login} element={<LoginPage />} />
+        <Route path={pageRoutes.home} element={<HomePage />} />
+        <Route path={pageRoutes.signUp} element={<SignUpPage />} />
+        <Route path={pageRoutes.page404} element={<Page404 />} />
       </Routes>
     </BrowserRouter>
   </div>

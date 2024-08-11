@@ -1,23 +1,16 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import {
   setActiveChannel,
-  getActiveChannelForDelete,
+  getActiveChannelForChange,
   setShowModalDeleteChannel,
-  setShowNotifyDeleteChannel,
 } from '../slices/channelsSlice';
 import { deleteMessagesDuringDeleteChannel } from '../slices/messagesSlice';
-import routes from '../routes';
-import {
-  setShowNotifyNetworkError,
-  getShowNotifyNetworkError,
-  setShowNotifyServerError,
-  getShowNotifyServerError,
-} from '../slices/authorizationSlice';
-import { notifyError } from '../utils/notifyError';
+import { serverRoutes } from '../routes';
+import { notifySucess, notifyError } from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ModalDeleteChannel = () => {
@@ -25,15 +18,13 @@ const ModalDeleteChannel = () => {
   const { t } = useTranslation();
 
   const token = localStorage.getItem('token');
-  const isShowNotifyNetworkError = useSelector(getShowNotifyNetworkError);
-  const isShowNotifyServerError = useSelector(getShowNotifyServerError);
 
   const handleSetShowModalDeleteChannel = () => {
     dispatch(setShowModalDeleteChannel());
   };
 
   const handleSetDeleteChannel = async (userToken, deletedChannelId) => {
-    const pathToDeleteChannel = [routes.channelsPath(), deletedChannelId].join('/');
+    const pathToDeleteChannel = [serverRoutes.channelsPath(), deletedChannelId].join('/');
     try {
       const response = await axios.delete(pathToDeleteChannel, {
         headers: {
@@ -44,34 +35,20 @@ const ModalDeleteChannel = () => {
         dispatch(deleteMessagesDuringDeleteChannel({ id: response.data.id }));
         handleSetShowModalDeleteChannel();
         dispatch(setActiveChannel(1));
-        dispatch(setShowNotifyDeleteChannel());
+        notifySucess(t('channels.notifyDelete'));
       }
     } catch (error) {
       console.log(error);
       if (error.code === 'ERR_NETWORK') {
-        dispatch(setShowNotifyNetworkError());
+        notifyError(t('errors.notifyNetworkError'));
       }
       if (error.response.status >= 500) {
-        dispatch(setShowNotifyServerError());
+        notifyError(t('errors.notifyServerError'));
       }
     }
   };
 
-  useEffect(() => {
-    if (isShowNotifyNetworkError) {
-      notifyError(t('errors.notifyNetworkError'));
-      dispatch(setShowNotifyNetworkError());
-    }
-  }, [isShowNotifyNetworkError, dispatch, t]);
-
-  useEffect(() => {
-    if (isShowNotifyServerError) {
-      notifyError(t('errors.notifyServerError'));
-      dispatch(setShowNotifyServerError());
-    }
-  }, [isShowNotifyServerError, dispatch, t]);
-
-  const activeChannelForDelete = useSelector(getActiveChannelForDelete);
+  const activeChannelForDelete = useSelector(getActiveChannelForChange);
 
   return (
     <Modal show onHide={handleSetShowModalDeleteChannel} centered>

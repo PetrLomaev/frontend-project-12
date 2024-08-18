@@ -4,7 +4,7 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import * as yup from 'yup';
+import getSchema from '../utils/validation';
 import {
   getChannels,
   setShowModalRenameChannel,
@@ -64,24 +64,14 @@ const ModalRenameChannel = () => {
   const channels = useSelector(getChannels);
   const activeChannelForRename = useSelector(getActiveChannelForChange);
 
-  const isUniqueChannelName = (name) => {
-    const checkCannels = channels.filter((channel) => channel.name === name);
-    return !(checkCannels.length > 0);
-  };
-
-  const schema = yup.object().shape({
-    renameChannelName: yup.string()
-      .required(t('errors.notBeEmpty'))
-      .min(3, t('errors.min3'))
-      .max(20, t('errors.max20'))
-      .test('is-unique', t('errors.isUnique'), (value) => isUniqueChannelName(value)),
-  });
+  const allAddedChannelNames = channels.map((channel) => channel.name);
+  const { renameChannelSchema } = getSchema(t, allAddedChannelNames);
 
   const formInit = useFormik({
     initialValues: {
       renameChannelName: activeChannelForRename.name,
     },
-    validationSchema: schema,
+    validationSchema: renameChannelSchema,
     onSubmit: (values) => {
       handleSetNewChannelName(values.renameChannelName, token, activeChannelForRename.id);
     },

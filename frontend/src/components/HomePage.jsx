@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { notifyError } from '../utils/notifyError';
-import { getIsAuthorization, logOut } from '../slices/authorizationSlice';
+import { getIsAuthorization } from '../slices/authorizationSlice';
 import {
   setChannels,
   getShowModalAddChannel,
@@ -55,7 +55,7 @@ const HomePage = () => {
     };
 
     getChannelsData(token);
-  }, [dispatch, token]);
+  }, [dispatch, t, token]);
 
   useEffect(() => {
     const getMessagesData = async (userToken) => {
@@ -79,7 +79,7 @@ const HomePage = () => {
     };
 
     getMessagesData(token);
-  }, [dispatch, token]);
+  }, [dispatch, t, token]);
 
   useEffect(() => {
     if (!isAuthorization) {
@@ -87,33 +87,11 @@ const HomePage = () => {
     }
   });
 
-  const handleLogOut = () => {
-    dispatch(logOut());
-  };
-
-  const handleLinkClick = (e) => {
-    if (isAuthorization) {
-      e.preventDefault();
-    } else {
-      navigate(pageRoutes.home);
-    }
-  };
-
   return (isAuthorization
     && (
     <div className="h-100">
       <div className="h-100" id="chat">
         <div className="d-flex flex-column h-100">
-          <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
-            <div className="container">
-              <a className="navbar-brand" href="/" onClick={handleLinkClick}>
-                {t('headerChat.header')}
-              </a>
-              <button type="button" className="btn btn-primary" onClick={handleLogOut}>
-                {t('homePage.exitButton')}
-              </button>
-            </div>
-          </nav>
           <div className="container h-100 my-4 overflow-hidden rounded shadow">
             <div className="row h-100 bg-white flex-md-row">
               <div className="col-4 col-md-2 border-end px-0 bg-light flex-column h-100 d-flex">

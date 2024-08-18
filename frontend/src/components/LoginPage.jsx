@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { Button, Form, FloatingLabel } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import * as yup from 'yup';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import getSchema from '../utils/validation';
 import { serverRoutes, pageRoutes } from '../routes';
 import startImage from '../images/start-image.jpeg';
-import { logIn, logOut, getIsAuthorization } from '../slices/authorizationSlice';
+import { logIn } from '../slices/authorizationSlice';
 import { notifyError } from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -48,41 +48,19 @@ const LoginPage = () => {
     }
   };
 
-  const isAuthorization = useSelector(getIsAuthorization);
-
-  const schema = yup.object().shape({
-    username: yup.string().required(t('errors.requiredField')),
-    password: yup.string().required(t('errors.requiredField')),
-  });
+  const { loginSchema } = getSchema(t);
 
   const formInit = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
-    validationSchema: schema,
+    validationSchema: loginSchema,
     onSubmit: (values) => handleSubmit(values, setShowError, navigate, dispatch),
   });
 
-  const handleLogOut = () => {
-    dispatch(logOut());
-  };
-
   return (
     <div className="d-flex flex-column h-100">
-      <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
-        <div className="container">
-          <a className="navbar-brand" href="/">
-            {t('headerChat.header')}
-          </a>
-          {isAuthorization && (
-          <button type="button" className="btn btn-primary" onClick={handleLogOut}>
-            {t('homePage.exitButton')}
-          </button>
-          )}
-        </div>
-      </nav>
-
       <div className="container-fluid h-100">
         <div className="row justify-content-center align-content-center h-100">
           <div className="col-12 col-md-6">
@@ -131,7 +109,7 @@ const LoginPage = () => {
                     </FloatingLabel>
                   </Form.Group>
                   <Button type="submit" className="w-100 mb-3 btn">
-                    Войти
+                    {(t('loginPage.header'))}
                   </Button>
                   {showError && (
                   <div className="invalid-feedback" style={{ display: 'block', color: 'red' }}>{t('errors.incorrectNameOrPassword')}</div>

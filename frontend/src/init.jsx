@@ -13,13 +13,6 @@ import ProfanityProvider from './providers/profanityProvider.js';
 import resources from './locales/index.js';
 import store from './slices/configureStore';
 
-const rollbarInit = {
-  accessToken: process.env.ROLLBAR_TOKEN,
-  environment: process.env.NODE_ENV,
-};
-
-const rollbarConfig = new Rollbar(rollbarInit);
-
 const Init = ({ children }) => {
   i18next
     .use(initReactI18next)
@@ -33,6 +26,13 @@ const Init = ({ children }) => {
     });
 
   const newSocket = io();
+
+  const rollbarInit = {
+    accessToken: process.env.ROLLBAR_TOKEN,
+    environment: process.env.NODE_ENV,
+  };
+
+  const rollbarConfig = new Rollbar(rollbarInit);
 
   return (
     <I18nextProvider i18n={i18next} defaultNS="translation">

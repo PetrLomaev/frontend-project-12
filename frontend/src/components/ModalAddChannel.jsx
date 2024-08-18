@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { Button, Form, Modal } from 'react-bootstrap';
 import axios from 'axios';
-import * as yup from 'yup';
+import getSchema from '../utils/validation';
 import { getChannels, setActiveChannel, setShowModalAddChannel } from '../slices/channelsSlice';
 import { serverRoutes } from '../routes';
 import { useProfanity } from '../hooks/index';
@@ -59,24 +59,14 @@ const ModalAddChannel = () => {
     }, 100);
   }, []);
 
-  const isUniqueChannelName = (name) => {
-    const checkChannels = channels.filter((channel) => channel.name === name);
-    return !(checkChannels.length > 0);
-  };
-
-  const schema = yup.object().shape({
-    newChannelName: yup.string()
-      .required(t('errors.notBeEmpty'))
-      .min(3, t('errors.min3'))
-      .max(20, t('errors.max20'))
-      .test('is-unique', t('errors.isUnique'), (value) => isUniqueChannelName(value)),
-  });
+  const allAddedChannelNames = channels.map((channel) => channel.name);
+  const { addChannelSchema } = getSchema(t, allAddedChannelNames);
 
   const formInit = useFormik({
     initialValues: {
       newChannelName: '',
     },
-    validationSchema: schema,
+    validationSchema: addChannelSchema,
     onSubmit: (values) => handleAddChannel(values.newChannelName, token),
   });
 

@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { Button, Form, FloatingLabel } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import * as yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import getSchema from '../utils/validation';
 import { serverRoutes, pageRoutes } from '../routes';
 import signUpImage from '../images/signup-image.jpg';
-import { logIn, logOut, getIsAuthorization } from '../slices/authorizationSlice';
+import { logIn, logOut } from '../slices/authorizationSlice';
 import { notifyError } from '../utils/notifyError';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -17,24 +17,6 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-
-  const schema = yup.object().shape({
-    username: yup
-      .string()
-      .required(t('errors.notBeEmpty'))
-      .min(3, t('errors.min3'))
-      .max(20, t('errors.max20')),
-    password: yup
-      .string()
-      .required(t('errors.notBeEmpty'))
-      .min(6, t('errors.min6')),
-    confirmPassword: yup
-      .string()
-      .required('Обязательное поле')
-      .oneOf([yup.ref('password'), null], t('errors.passwordsMustMatch')),
-  });
-
-  const isAuthorization = useSelector(getIsAuthorization);
 
   const handleSubmit = async (formValue) => {
     try {
@@ -69,35 +51,20 @@ const SignUpPage = () => {
     }
   };
 
+  const { signUpSchema } = getSchema(t);
+
   const formInit = useFormik({
     initialValues: {
       username: '',
       password: '',
       confirmPassword: '',
     },
-    validationSchema: schema,
+    validationSchema: signUpSchema,
     onSubmit: (values) => handleSubmit(values),
   });
 
-  const handleLogOut = () => {
-    dispatch(logOut());
-  };
-
   return (
     <div className="d-flex flex-column h-100">
-      <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
-        <div className="container">
-          <a className="navbar-brand" href="/">
-            {t('headerChat.header')}
-          </a>
-          {isAuthorization && (
-          <button type="button" className="btn btn-primary" onClick={handleLogOut}>
-            {t('homePage.exitButton')}
-          </button>
-          )}
-        </div>
-      </nav>
-
       <div className="container-fluid h-100">
         <div className="row justify-content-center align-content-center h-100">
           <div className="col-12 col-md-6 col-xxl-6">

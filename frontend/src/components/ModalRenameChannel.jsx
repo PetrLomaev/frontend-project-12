@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import getSchema from '../utils/validation';
+import { getToken } from '../slices/authorizationSlice';
 import {
   getChannels,
   setShowModalRenameChannel,
@@ -12,7 +13,7 @@ import {
 } from '../slices/channelsSlice';
 import { serverRoutes } from '../routes';
 import { useProfanity } from '../hooks/index';
-import { notifySucess, notifyError } from '../utils/notifyError';
+import { notifySucess, notifyError } from '../utils/notify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ModalRenameChannel = () => {
@@ -21,7 +22,7 @@ const ModalRenameChannel = () => {
   const profanity = useProfanity();
   const getFilteredChannelName = (message) => profanity(message).trim();
 
-  const token = localStorage.getItem('token');
+  const token = useSelector(getToken);
   const inputRef = useRef(null);
 
   const handleSetShowModalRenameChannel = () => {

@@ -8,9 +8,6 @@ const initialState = {
   showModalAddChannel: false,
   showModalRenameChannel: false,
   showModalDeleteChannel: false,
-  showNotifyAddChannel: false,
-  showNotifyRenameChannel: false,
-  showNotifyDeleteChannel: false,
   activeChannelForChange: {
     id: null,
     name: '',
@@ -61,15 +58,6 @@ const channelsSlice = createSlice({
       const updatedChannels = state.channels.filter((channel) => Number(channel.id) !== Number(id));
       state.channels = updatedChannels;
     },
-    setShowNotifyAddChannel(state) {
-      state.showNotifyAddChannel = !state.showNotifyAddChannel;
-    },
-    setShowNotifyRenameChannel(state) {
-      state.showNotifyRenameChannel = !state.showNotifyRenameChannel;
-    },
-    setShowNotifyDeleteChannel(state) {
-      state.showNotifyDeleteChannel = !state.showNotifyDeleteChannel;
-    },
   },
 });
 
@@ -83,9 +71,6 @@ export const {
   setChannelDataForChange,
   setShowModalDeleteChannel,
   setDeleteChannel,
-  setShowNotifyAddChannel,
-  setShowNotifyRenameChannel,
-  setShowNotifyDeleteChannel,
 } = channelsSlice.actions;
 export const getChannels = (state) => state.channels.channels;
 export const getActiveChannelId = (state) => state.channels.activeChannelId;
@@ -101,8 +86,5 @@ export const getShowModalAddChannel = (state) => state.channels.showModalAddChan
 export const getShowModalRenameChannel = (state) => state.channels.showModalRenameChannel;
 export const getShowModalDeleteChannel = (state) => state.channels.showModalDeleteChannel;
 export const getActiveChannelForChange = (state) => state.channels.activeChannelForChange;
-export const getShowNotifyAddChannel = (state) => state.channels.showNotifyAddChannel;
-export const getShowNotifyRenameChannel = (state) => state.channels.showNotifyRenameChannel;
-export const getShowNotifyDeleteChannel = (state) => state.channels.showNotifyDeleteChannel;
 
 export default channelsSlice.reducer;

@@ -9,7 +9,7 @@ import getSchema from '../utils/validation';
 import { serverRoutes, pageRoutes } from '../routes';
 import signUpImage from '../images/signup-image.jpg';
 import { logIn, logOut } from '../slices/authorizationSlice';
-import { notifyError } from '../utils/notifyError';
+import { notifyError } from '../utils/notify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const SignUpPage = () => {

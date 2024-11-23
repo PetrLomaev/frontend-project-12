@@ -5,11 +5,11 @@ import { Formik, Field, Form } from 'formik';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { getMessages, getCountOfMessages } from '../slices/messagesSlice';
-import { getUser } from '../slices/authorizationSlice';
+import { getUser, getToken } from '../slices/authorizationSlice';
 import { getActiveChannelId, getActiveChannelName } from '../slices/channelsSlice';
 import { serverRoutes } from '../routes';
 import { useProfanity } from '../hooks/index';
-import { notifyError } from '../utils/notifyError';
+import { notifyError } from '../utils/notify';
 import '../App.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -39,7 +39,7 @@ const Messages = () => {
   };
 
   const user = useSelector(getUser);
-  const token = localStorage.getItem('token');
+  const token = useSelector(getToken);
 
   const activeChannelName = useSelector(getActiveChannelName);
   const activeChannelId = useSelector(getActiveChannelId);

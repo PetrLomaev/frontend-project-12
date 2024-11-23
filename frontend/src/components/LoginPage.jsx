@@ -9,7 +9,7 @@ import getSchema from '../utils/validation';
 import { serverRoutes, pageRoutes } from '../routes';
 import startImage from '../images/start-image.jpeg';
 import { logIn } from '../slices/authorizationSlice';
-import { notifyError } from '../utils/notifyError';
+import { notifyError } from '../utils/notify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {

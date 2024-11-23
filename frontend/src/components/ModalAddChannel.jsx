@@ -5,10 +5,11 @@ import { useFormik } from 'formik';
 import { Button, Form, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import getSchema from '../utils/validation';
+import { getToken } from '../slices/authorizationSlice';
 import { getChannels, setActiveChannel, setShowModalAddChannel } from '../slices/channelsSlice';
 import { serverRoutes } from '../routes';
 import { useProfanity } from '../hooks/index';
-import { notifySucess, notifyError } from '../utils/notifyError';
+import { notifySucess, notifyError } from '../utils/notify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ModalAddChannel = () => {
@@ -17,7 +18,7 @@ const ModalAddChannel = () => {
   const profanity = useProfanity();
   const getFilteredChannelName = (message) => profanity(message).trim();
 
-  const token = localStorage.getItem('token');
+  const token = useSelector(getToken);
 
   const inputRef = useRef(null);
 

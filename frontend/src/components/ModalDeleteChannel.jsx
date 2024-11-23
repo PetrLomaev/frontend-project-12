@@ -8,16 +8,17 @@ import {
   getActiveChannelForChange,
   setShowModalDeleteChannel,
 } from '../slices/channelsSlice';
+import { getToken } from '../slices/authorizationSlice';
 import { deleteMessagesDuringDeleteChannel } from '../slices/messagesSlice';
 import { serverRoutes } from '../routes';
-import { notifySucess, notifyError } from '../utils/notifyError';
+import { notifySucess, notifyError } from '../utils/notify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ModalDeleteChannel = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const token = localStorage.getItem('token');
+  const token = useSelector(getToken);
 
   const handleSetShowModalDeleteChannel = () => {
     dispatch(setShowModalDeleteChannel());

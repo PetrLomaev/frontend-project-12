@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import { notifyError } from '../utils/notifyError';
-import { getIsAuthorization } from '../slices/authorizationSlice';
+import { notifyError } from '../utils/notify';
+import { getIsAuthorization, getToken } from '../slices/authorizationSlice';
 import {
   setChannels,
   getShowModalAddChannel,
@@ -26,7 +26,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const token = localStorage.getItem('token');
+  const token = useSelector(getToken);
   const isAuthorization = useSelector(getIsAuthorization);
 
   const isShowModalAddChannel = useSelector(getShowModalAddChannel);
